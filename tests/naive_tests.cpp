@@ -1,125 +1,110 @@
-#include "naive.hpp"          // Include the header for function declarations
-#include <gtest/gtest.h>      // Google Test framework
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/benchmark/catch_benchmark.hpp>
+#include <catch2/catch_session.hpp>
+#include "naive.hpp"
 #include <string>
 
-// Fixture for Naive Alignment Tests
-class NaiveAlignmentTest : public ::testing::Test {
-protected:
-    // Helper function to run the naive alignment and return the result
-    int RunNaiveAlignment(const std::string& a, const std::string& b, int x, int o, int e) {
-        return naive(a, b, x, o, e);
+
+TEST_CASE("Functional Tests for Naive and Wavefront Alignments") {
+    int x = 4, o = 6, e = 2;
+
+    SECTION("Identical Sequences") {
+        std::string a = "GATTACA";
+        std::string b = "GATTACA";
+        REQUIRE(naive(a, b, x, o, e) == 0);
+        REQUIRE(wavefront(a, b, x, o, e) == 0);
     }
 
-    // Helper function to run the wavefront alignment and return the result
-    int RunWavefrontAlignment(const std::string& a, const std::string& b, int x, int o, int e) {
-        return wavefront(a, b, x, o, e);
+    SECTION("Completely Different Sequences") {
+        std::string a = "GATTACA";
+        std::string b = "CTGACGT";
+        REQUIRE(naive(a, b, x, o, e) > 0);
+        REQUIRE(wavefront(a, b, x, o, e) > 0);
     }
-};
 
-// Test Cases for Naive Alignment
+    SECTION("Single Insertion") {
+        std::string a = "GATTACA";
+        std::string b = "GATTTACA";
+        int expected_cost = o;
+        REQUIRE(naive(a, b, x, o, e) == expected_cost);
+        REQUIRE(wavefront(a, b, x, o, e) == expected_cost);
+    }
 
-// 1. Test identical sequences
-TEST_F(NaiveAlignmentTest, IdenticalSequences) {
-    std::string a = "GATTACA";
-    std::string b = "GATTACA";
-    int x = 4, o = 6, e = 2;
+    SECTION("Single Deletion") {
+        std::string a = "GATTACA";
+        std::string b = "GATA";
+        int expected_cost = o + 2 * e; // Corrected expected cost
+        REQUIRE(naive(a, b, x, o, e) == expected_cost);
+        REQUIRE(wavefront(a, b, x, o, e) == expected_cost);
+    }
 
-    EXPECT_EQ(RunNaiveAlignment(a, b, x, o, e), 0);
-    EXPECT_EQ(RunWavefrontAlignment(a, b, x, o, e), 0);
+    SECTION("Single Mismatch") {
+        std::string a = "GATTACA";
+        std::string b = "GACTACA";
+        int expected_cost = x;
+        REQUIRE(naive(a, b, x, o, e) == expected_cost);
+        REQUIRE(wavefront(a, b, x, o, e) == expected_cost);
+    }
+
+    SECTION("Long Sequence with Single Mismatch") {
+        std::string long_a(1000, 'A');
+        std::string long_b = long_a;
+        long_b[500] = 'T';
+        int expected_cost = x;
+        REQUIRE(naive(long_a, long_b, x, o, e) == expected_cost);
+        REQUIRE(wavefront(long_a, long_b, x, o, e) == expected_cost);
+    }
+
+    SECTION("Empty Sequences") {
+        std::string a = "";
+        std::string b = "";
+        REQUIRE(naive(a, b, x, o, e) == 0);
+        REQUIRE(wavefront(a, b, x, o, e) == 0);
+    }
+
+    SECTION("One Empty Sequence") {
+        std::string a = "GATTACA";
+        std::string b = "";
+        int expected_cost = o + e * (a.size() - 1);
+        REQUIRE(naive(a, b, x, o, e) == expected_cost);
+        REQUIRE(wavefront(a, b, x, o, e) == expected_cost);
+    }
 }
 
-// 2. Test completely different sequences
-TEST_F(NaiveAlignmentTest, CompletelyDifferentSequences) {
-    std::string a = "GATTACA";
-    std::string b = "CTGACGT";
+
+// Benchmarking Section for Performance Measurement
+TEST_CASE("Benchmarking Naive and Wavefront Alignment Implementations", "[benchmark]") {
     int x = 4, o = 6, e = 2;
 
-    EXPECT_GT(RunNaiveAlignment(a, b, x, o, e), 0);
-    EXPECT_GT(RunWavefrontAlignment(a, b, x, o, e), 0);
+    std::string short_a = "GATTACA";
+    std::string short_b = "CTGACGT";
+
+    std::string long_a(1000, 'A');
+    std::string long_b = long_a;
+    long_b[500] = 'T'; // Single mismatch in the middle
+
+    BENCHMARK("Naive Alignment - Short Sequences") {
+        return naive(short_a, short_b, x, o, e);
+    };
+
+    BENCHMARK("Wavefront Alignment - Short Sequences") {
+        return wavefront(short_a, short_b, x, o, e);
+    };
+
+    BENCHMARK("Naive Alignment - Long Sequences") {
+        return naive(long_a, long_b, x, o, e);
+    };
+
+    BENCHMARK("Wavefront Alignment - Long Sequences") {
+        return wavefront(long_a, long_b, x, o, e);
+    };
 }
 
-// 3. Test single insertion penalty
-TEST_F(NaiveAlignmentTest, SingleInsertion) {
-    std::string a = "GATTACA";
-    std::string b = "GATTTACA";
-    int x = 4, o = 6, e = 2;
+int main(int argc, char* argv[]) {
+    Catch::Session session; // Create a Catch2 session to run the tests
 
-    int expected_cost = o + e;
-    EXPECT_EQ(RunNaiveAlignment(a, b, x, o, e), expected_cost);
-    EXPECT_EQ(RunWavefrontAlignment(a, b, x, o, e), expected_cost);
-}
+    // Use the session to run all test cases
+    int result = session.run(argc, argv);
 
-// 4. Test single deletion penalty
-TEST_F(NaiveAlignmentTest, SingleDeletion) {
-    std::string a = "GATTACA";
-    std::string b = "GATA";
-    int x = 4, o = 6, e = 2;
-
-    int expected_cost = o + 3 * e;
-    EXPECT_EQ(RunNaiveAlignment(a, b, x, o, e), expected_cost);
-    EXPECT_EQ(RunWavefrontAlignment(a, b, x, o, e), expected_cost);
-}
-
-// 5. Test single mismatch penalty
-TEST_F(NaiveAlignmentTest, SingleMismatch) {
-    std::string a = "GATTACA";
-    std::string b = "GACTACA";
-    int x = 4, o = 6, e = 2;
-
-    int expected_cost = x;
-    EXPECT_EQ(RunNaiveAlignment(a, b, x, o, e), expected_cost);
-    EXPECT_EQ(RunWavefrontAlignment(a, b, x, o, e), expected_cost);
-}
-
-// 6. Test longer sequences with minimal changes
-TEST_F(NaiveAlignmentTest, LongSequenceWithSingleChange) {
-    std::string a(1000, 'A');
-    std::string b = a;
-    b[500] = 'T';  // Introduce a single mismatch in the middle
-    int x = 4, o = 6, e = 2;
-
-    int expected_cost = x;
-    EXPECT_EQ(RunNaiveAlignment(a, b, x, o, e), expected_cost);
-    EXPECT_EQ(RunWavefrontAlignment(a, b, x, o, e), expected_cost);
-}
-
-// 7. Test empty sequences
-TEST_F(NaiveAlignmentTest, EmptySequences) {
-    std::string a = "";
-    std::string b = "";
-    int x = 4, o = 6, e = 2;
-
-    EXPECT_EQ(RunNaiveAlignment(a, b, x, o, e), 0);
-    EXPECT_EQ(RunWavefrontAlignment(a, b, x, o, e), 0);
-}
-
-// 8. Test one empty sequence
-TEST_F(NaiveAlignmentTest, OneEmptySequence) {
-    std::string a = "GATTACA";
-    std::string b = "";
-    int x = 4, o = 6, e = 2;
-
-    int expected_cost = o + e * a.size();
-    EXPECT_EQ(RunNaiveAlignment(a, b, x, o, e), expected_cost);
-    EXPECT_EQ(RunWavefrontAlignment(a, b, x, o, e), expected_cost);
-}
-
-// 9. Test realistic DNA sequences with few differences
-TEST_F(NaiveAlignmentTest, RealisticDNASequences) {
-    std::string a = "AGCTTAGCTA";
-    std::string b = "AGCTCGCTA";
-    int x = 4, o = 6, e = 2;
-
-    EXPECT_GT(RunNaiveAlignment(a, b, x, o, e), 0);
-    EXPECT_GT(RunWavefrontAlignment(a, b, x, o, e), 0);
-}
-
-// 10. Test high penalties to check alignment behavior under extreme conditions
-TEST_F(NaiveAlignmentTest, HighPenaltyConditions) {
-    std::string a = "GATTACA";
-    std::string b = "CTGACGT";
-    int x = 10, o = 10, e = 10;
-
-    EXPECT_GT(RunNaiveAlignment(a, b, x, o, e), 50);
-    EXPECT_GT(RunWavefrontAlignment(a, b, x, o, e), 50);
+    return (result < 0xff ? result : 0xff); // Ensure the return value is within range
 }

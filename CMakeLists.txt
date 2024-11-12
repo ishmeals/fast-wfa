@@ -1,4 +1,5 @@
 cmake_minimum_required (VERSION 3.28)
+set(CMAKE_BUILD_TYPE Debug)
 
 include(FetchContent)
 
@@ -93,33 +94,22 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 endif()
 
 #
-# NAIVE_EXECUTABLE
-#
-
-include_directories(include)
-add_executable(run_naive "src/naive.cpp")
-set_property(TARGET run_naive PROPERTY CXX_STANDARD 23)
-target_link_libraries(run_naive PRIVATE ${LIB_WFA})
-
-if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-	target_compile_options(run_naive PUBLIC -stdlib=libc++ -Werror -W -pedantic -fexperimental-library )
-endif()
-
-include(FetchContent)
-
-#
 # TESTS
 #
 
+include(FetchContent)
+# Fetch Catch2 library
 FetchContent_Declare(
-    googletest
-    GIT_REPOSITORY https://github.com/google/googletest.git
-    GIT_TAG release-1.11.0
+    Catch2
+    GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+    GIT_TAG v3.7.1  # Replace with the latest version as needed
 )
-FetchContent_MakeAvailable(googletest)
+FetchContent_MakeAvailable(Catch2)
+
+include_directories(include)
 enable_testing()
 
 add_executable(naive_tests tests/naive_tests.cpp src/naive.cpp)
-target_link_libraries(naive_tests gtest gtest_main)
+target_link_libraries(naive_tests PRIVATE Catch2::Catch2)
 target_include_directories(naive_tests PRIVATE include)
 add_test(NAME NaiveAlignmentTests COMMAND naive_tests)
