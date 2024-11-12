@@ -91,3 +91,15 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 	target_compile_options(wfa_tool PUBLIC -stdlib=libc++ -Werror -W -pedantic -fexperimental-library )
 	# set_target_properties(${LIB_SYNTH} PROPERTIES CXX_CLANG_TIDY "clang-tidy")
 endif()
+
+#
+# NAIVE_EXECUTABLE
+#
+
+add_executable(run_naive "src/naive.cpp")
+set_property(TARGET run_naive PROPERTY CXX_STANDARD 23)
+target_link_libraries(run_naive PRIVATE ${LIB_WFA})
+
+if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+	target_compile_options(run_naive PUBLIC -stdlib=libc++ -Werror -W -pedantic -fexperimental-library )
+endif()
