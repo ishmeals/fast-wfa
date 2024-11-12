@@ -1,3 +1,4 @@
+#include "naive.hpp"
 #include <algorithm>
 #include <array>
 #include <chrono>

@@ -96,6 +96,7 @@ endif()
 # NAIVE_EXECUTABLE
 #
 
+include_directories(include)
 add_executable(run_naive "src/naive.cpp")
 set_property(TARGET run_naive PROPERTY CXX_STANDARD 23)
 target_link_libraries(run_naive PRIVATE ${LIB_WFA})
@@ -103,3 +104,22 @@ target_link_libraries(run_naive PRIVATE ${LIB_WFA})
 if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 	target_compile_options(run_naive PUBLIC -stdlib=libc++ -Werror -W -pedantic -fexperimental-library )
 endif()
+
+include(FetchContent)
+
+#
+# TESTS
+#
+
+FetchContent_Declare(
+    googletest
+    GIT_REPOSITORY https://github.com/google/googletest.git
+    GIT_TAG release-1.11.0
+)
+FetchContent_MakeAvailable(googletest)
+enable_testing()
+
+add_executable(naive_tests tests/naive_tests.cpp src/naive.cpp)
+target_link_libraries(naive_tests gtest gtest_main)
+target_include_directories(naive_tests PRIVATE include)
+add_test(NAME NaiveAlignmentTests COMMAND naive_tests)
