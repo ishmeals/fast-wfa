@@ -1,133 +1,126 @@
 #include "naive.hpp"
 #include <algorithm>
 #include <array>
-#include <chrono>
-#include <iostream>
-#include <string>
 #include <string_view>
 #include <vector>
 
 int naive(std::string_view a, std::string_view b, int x, int o, int e) {
-    const int INF = 1e9;
-    std::vector dp(a.size() + 1, std::vector(b.size() + 1, std::array<int, 3>{INF, INF, INF})); // M, I, D
+    const int INF = -1e9;
+    size_t n = a.size(), m = b.size();
+    std::vector<std::vector<std::array<int, 3>>> dp(n + 1, std::vector<std::array<int, 3>>(m + 1, {INF, INF, INF})); // M, I, D
 
-    dp[0][0] = {0, INF, INF}; // Initial state at (0, 0)
+    dp[0][0][0] = 0; // Initial state at (0, 0)
 
     // First column (gaps in B)
-    for (size_t i = 1; i <= a.size(); i++) {
-        dp[i][0][0] = dp[i][0][1] = INF;
-        dp[i][0][2] = std::min(dp[i - 1][0][0] + o, dp[i - 1][0][2] + e);
+    for (size_t i = 1; i <= n; ++i) {
+        dp[i][0][0] = -o - e * i;  // Deletion costs
+        dp[i][0][2] = dp[i][0][0];
     }
     // First row (gaps in A)
-    for (size_t j = 1; j <= b.size(); j++) {
-        dp[0][j][0] = dp[0][j][2] = INF;
-        dp[0][j][1] = std::min(dp[0][j - 1][0] + o, dp[0][j - 1][1] + e);
+    for (size_t j = 1; j <= m; ++j) {
+        dp[0][j][0] = -o - e * j;  // Insertion costs
+        dp[0][j][1] = dp[0][j][0];
     }
 
     // DP computation
-    for (size_t i = 1; i <= a.size(); i++) {
-        for (size_t j = 1; j <= b.size(); j++) {
-            int cost = (a[i - 1] != b[j - 1]) * x;
-
-            // Match/Mismatch state
-            dp[i][j][0] = std::min({
-                dp[i - 1][j - 1][0] + cost,
-                dp[i - 1][j - 1][1] + cost,
-                dp[i - 1][j - 1][2] + cost
-            });
-
-            dp[i][j][1] = std::min(dp[i][j - 1][0] + o, dp[i][j - 1][1] + e); // Insertion state (gap in A)
-            dp[i][j][2] = std::min(dp[i - 1][j][0] + o, dp[i - 1][j][2] + e); // Deletion state (gap in B)
+    for (size_t i = 1; i <= n; i++) {
+        for (size_t j = 1; j <= m; j++) {
+            int cost = (a[i - 1] != b[j - 1]) ? -x : 0;
+            dp[i][j][0] = std::max({dp[i - 1][j - 1][0], dp[i - 1][j - 1][1], dp[i - 1][j - 1][2]}) + cost; // Match/Mismatch state
+            dp[i][j][1] = std::max(dp[i][j - 1][0] - o - e, dp[i][j - 1][1] - e); // Insertion state (gap in A)
+            dp[i][j][2] = std::max(dp[i - 1][j][0] - o - e, dp[i - 1][j][2] - e); // Deletion state (gap in B)
         }
     }
 
     // Final result
-    return std::min({dp[a.size()][b.size()][0], dp[a.size()][b.size()][1], dp[a.size()][b.size()][2]});
+    return std::max({dp[n][m][0], dp[n][m][1], dp[n][m][2]});
 }
 
-
 int wavefront(std::string_view a, std::string_view b, int x, int o, int e) {
-    const int INF = 1e9;
-    std::vector dp(a.size() + 1, std::vector(b.size() + 1, std::array<int, 3>{INF, INF, INF})); // M, I, D
-
-    dp[0][0] = {0, INF, INF}; // Initialize starting point
+    const int INF = -1e9;  // Use large negative value to avoid overflow
+    size_t n = a.size(), m = b.size();
+    std::vector<std::vector<std::array<int, 3>>> dp(
+        n + 1, std::vector<std::array<int, 3>>(m + 1, {INF, INF, INF})); // M, I, D
+    
+    dp[0][0] = {0, INF, INF};  // Initialize starting point
 
     // First row (gaps in A)
-    for (size_t j = 1; j <= b.size(); ++j) {
-        dp[0][j][1] = o + e * (j - 1);
+    for (size_t j = 1; j <= m; ++j) {
+        dp[0][j][1] = -o - e * j;  // Insertion costs
         dp[0][j][0] = dp[0][j][1];
     }
+
     // First column (gaps in B)
-    for (size_t i = 1; i <= a.size(); ++i) {
-        dp[i][0][2] = o + e * (i - 1);
+    for (size_t i = 1; i <= n; ++i) {
+        dp[i][0][2] = -o - e * i;  // Deletion costs
         dp[i][0][0] = dp[i][0][2];
     }
 
     // Queue to manage wavefront processing at each cost level
-    std::vector<std::vector<std::pair<size_t, size_t>>> q(1, {{0, 0}});
+    std::vector<std::vector<std::pair<size_t, size_t>>> q(1);
+    q[0].emplace_back(0, 0);
+
+    // Add initial positions from the first row and column to the queue
+    for (size_t i = 1; i <= n; ++i) {
+        int cost = dp[i][0][0];
+        if (q.size() <= static_cast<size_t>(-cost)) q.resize(-cost + 1);
+        q[-cost].emplace_back(i, 0);
+    }
+    for (size_t j = 1; j <= m; ++j) {
+        int cost = dp[0][j][0];
+        if (q.size() <= static_cast<size_t>(-cost)) q.resize(-cost + 1);
+        q[-cost].emplace_back(0, j);
+    }
 
     // Process cells in wavefront order
-    for (int s = 0; s < q.size(); ++s) {
+    for (size_t s = 0; s < q.size(); ++s) {
         for (size_t k = 0; k < q[s].size(); ++k) {
             auto [i, j] = q[s][k];
-            if (i == a.size() && j == b.size()) return s;
+
+            int max_dp_cost = std::max({dp[i][j][0], dp[i][j][1], dp[i][j][2]});
+            if (s > static_cast<size_t>(-max_dp_cost)) continue;
+
+            if (i == n && j == m) {
+                return max_dp_cost;
+            }
 
             // Match/Mismatch case
-            if (i < a.size() && j < b.size()) {
-                int cost = dp[i][j][0] + (a[i] != b[j]) * x;
-                if (cost < dp[i + 1][j + 1][0]) {
+            if (i < n && j < m) {
+                int match_cost = (a[i] != b[j]) ? -x : 0;
+                int prev_max = std::max({dp[i][j][0], dp[i][j][1], dp[i][j][2]});
+                int cost = prev_max + match_cost;
+                if (cost > dp[i + 1][j + 1][0]) {
                     dp[i + 1][j + 1][0] = cost;
-                    while (q.size() <= cost) q.push_back({});
-                    q[cost].emplace_back(i + 1, j + 1);
+                    if (q.size() <= static_cast<size_t>(-cost)) q.resize(-cost + 1);
+                    q[-cost].emplace_back(i + 1, j + 1);
                 }
             }
 
             // Insertion (gap in A)
-            if (j < b.size()) {
-                int cost = std::min(dp[i][j][0] + o, dp[i][j][1] + e);
-                if (cost < dp[i][j + 1][1]) {
+            if (j < m) {
+                int insert_cost_new = dp[i][j][0] - o - e;
+                int insert_cost_extend = dp[i][j][1] - e;
+                int cost = std::max(insert_cost_new, insert_cost_extend);
+                if (cost > dp[i][j + 1][1]) {
                     dp[i][j + 1][1] = cost;
-                    dp[i][j + 1][0] = std::min(dp[i][j + 1][0], cost);
-                    while (q.size() <= cost) q.push_back({});
-                    q[cost].emplace_back(i, j + 1);
+                    if (q.size() <= static_cast<size_t>(-cost)) q.resize(-cost + 1);
+                    q[-cost].emplace_back(i, j + 1);
                 }
             }
 
             // Deletion (gap in B)
-            if (i < a.size()) {
-                int cost = std::min(dp[i][j][0] + o, dp[i][j][2] + e);
-                if (cost < dp[i + 1][j][2]) {
+            if (i < n) {
+                int delete_cost_new = dp[i][j][0] - o - e;
+                int delete_cost_extend = dp[i][j][2] - e;
+                int cost = std::max(delete_cost_new, delete_cost_extend);
+                if (cost > dp[i + 1][j][2]) {
                     dp[i + 1][j][2] = cost;
-                    dp[i + 1][j][0] = std::min(dp[i + 1][j][0], cost);
-                    while (q.size() <= cost) q.push_back({});
-                    q[cost].emplace_back(i + 1, j);
+                    if (q.size() <= static_cast<size_t>(-cost)) q.resize(-cost + 1);
+                    q[-cost].emplace_back(i + 1, j);
                 }
             }
         }
     }
 
-    return dp[a.size()][b.size()][0]; // Return the minimum cost at the bottom-right corner
+    return -INF; // Return the minimum cost
 }
-
-/**
-int main() {
-	/*std::string a("GATACA"), b("GAGATA");*/ /*
-
-	const int N = 2000;
-	std::string a (N, ' '), b(N, ' ');
-	for (int i = 0; i < N; i++) {
-		a[i] = b[i] = "ACGT"[rand() % 4];
-		if (rand() % 20) continue;
-		while (a[i] == b[i]) a[i] =  "ACGT"[rand() % 4];
-	}
-
-	auto t = std::chrono::system_clock::now();
-	std::cout << naive(a,b, 4, 6, 2) << std::endl;
-	std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - t).count() << std::endl;
-
-	t = std::chrono::system_clock::now();
-	std::cout << wavefront(a,b, 4, 6, 2) << std::endl;
-	std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - t).count() << std::endl;
-
-}
-*/
