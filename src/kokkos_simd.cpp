@@ -1,5 +1,8 @@
 #include "include/kokkos_simd.hpp"
 
+#include "fmt/format.h"
+#include "fmt/ranges.h"
+
 int32_t wfa::wavefront_t::lookup(int32_t score, int32_t column, int32_t row) {
 	if (score < 0) {
 		return 0;
@@ -29,6 +32,12 @@ int32_t wfa::wavefront_t::wave_size(int32_t score, bool low) {
 	return pair[1];
 }
 
+void wfa::wavefront_t::print() {
+	for (const auto& pair : score_to_index) {
+		fmt::println("Score: {}", pair.first);
+		fmt::println("I: {}\nD: {}\nM: {}", data[pair.second][ins], data[pair.second][del], data[pair.second][match]);
+	}
+}
 //int32_t wfa::bn_s(wavefront_t& wavefront, int32_t score, int32_t column, int32_t row) {
 //	if (score < 0) {
 //		return 0;
@@ -44,6 +53,9 @@ bool wfa::extend(wavefront_t& wavefront, std::string_view a, std::string_view b,
 		int32_t starting_index = matchfront_back[k - k_low];
 		int32_t v = starting_index - k;
 		int32_t h = starting_index;
+		if (v >= a.size() or h >= b.size()) {
+			continue;
+		}
 		bool mismatch = false;
 		while (not mismatch) {
 			const char v_c = a.at(v);
@@ -122,8 +134,22 @@ int32_t wfa::wavefront_simd(std::string_view a, std::string_view b, int32_t x, i
 		if (matched) {
 			break;
 		}
-		score = score + 1;
+		if (score == 0) {
+			score += std::min(x, o + e);
+		}
+
+		else {
+			score = score + 1;
+			while (not (
+				wavefront.score_to_index.contains(score - x) 
+				or wavefront.score_to_index.contains(score - e - o) 
+				or (wavefront.score_to_index.contains(score - e) and (score - e >= o))
+			)) {
+				++score;
+			}
+		}
 		next(wavefront, score, x, o, e);
 	}
+	wavefront.print();
 	return score;
 }

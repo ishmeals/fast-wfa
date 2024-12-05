@@ -22,6 +22,7 @@ namespace wfa {
 		int32_t lookup(int32_t score, int32_t column, int32_t row);
 		int32_t wave_size(int32_t score, bool low);
 
+		void print();
 	};
 
 	//bounded score lookup
