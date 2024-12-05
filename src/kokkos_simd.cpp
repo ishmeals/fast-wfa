@@ -14,7 +14,7 @@ int32_t wfa::wavefront_t::lookup(int32_t score, int32_t column, int32_t row) {
 	if (iter == score_to_index.end()) {
 		return 0;
 	}
-	if (row > data[iter->second][column].size() - 1) {
+	if (row > static_cast<int32_t>(data[iter->second][column].size()) - 1) {
 		return 0;
 	}
 	return (data[iter->second][column][row]);
@@ -53,7 +53,7 @@ bool wfa::extend(wavefront_t& wavefront, std::string_view a, std::string_view b,
 		int32_t starting_index = matchfront_back[k - k_low];
 		int32_t v = starting_index - k;
 		int32_t h = starting_index;
-		if (v >= a.size() or h >= b.size()) {
+		if (v >= static_cast<int32_t>(a.size()) or h >= static_cast<int32_t>(b.size())) {
 			continue;
 		}
 		bool mismatch = false;
