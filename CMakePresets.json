@@ -48,7 +48,7 @@
       "cacheVariables": {
         "CMAKE_C_COMPILER": "clang",
         "CMAKE_CXX_COMPILER": "clang++",
-        "CMAKE_CXX_FLAGS": " -fexperimental-library",
+        "CMAKE_CXX_FLAGS": "-stdlib=libc++ -fexperimental-library",
         "VCPKG_TARGET_TRIPLET": "x64-linux-libcpp"
       },
       "condition": {
