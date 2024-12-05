@@ -17,7 +17,7 @@ namespace wfa {
 	 * @param e The cost for extending a gap in the alignment.
 	 * @return int The alignment cost between the two sequences.
 	 */
-	int naive(std::string_view a, std::string_view b, int x, int o, int e);
+	int32_t naive(std::string_view a, std::string_view b, int32_t x, int32_t o, int32_t e);
 
 	/**
 	 * @brief Computes the alignment cost between two sequences using a wavefront alignment approach.
@@ -33,6 +33,6 @@ namespace wfa {
 	 * @param e The cost for extending a gap in the alignment.
 	 * @return int The alignment cost between the two sequences.
 	 */
-	int wavefront(std::string_view a, std::string_view b, int x, int o, int e);
+	int32_t wavefront(std::string_view a, std::string_view b, int32_t x, int32_t o, int32_t e);
 }
 
