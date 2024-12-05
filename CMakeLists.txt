@@ -25,7 +25,7 @@ project ("SynthesisSearch")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-set(CMAKE_CXX_STANDARD 23) # Needed for Kokkos
+set(CMAKE_CXX_STANDARD 20) # Needed for Kokkos
 
 #
 # Dependencies
@@ -78,14 +78,14 @@ target_link_libraries(${LIB_WFA} PUBLIC
 					Kokkos::kokkos
 )
 
-set_property(TARGET ${LIB_WFA} PROPERTY CXX_STANDARD 23)
+set_property(TARGET ${LIB_WFA} PROPERTY CXX_STANDARD 20)
 
 #
 # WFA_TOOL
 #
 
 add_executable(wfa_tool "src/wfa_tool.cpp")
-set_property(TARGET wfa_tool PROPERTY CXX_STANDARD 23)
+set_property(TARGET wfa_tool PROPERTY CXX_STANDARD 20)
 target_link_libraries(wfa_tool PRIVATE ${LIB_WFA})
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
