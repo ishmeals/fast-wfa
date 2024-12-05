@@ -1,0 +1,3 @@
+SET(WFA_TEST_FILES ${WFA_TEST_FILES}
+	"tests/naive_tests.cpp"
+PARENT_SCOPE)

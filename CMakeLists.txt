@@ -106,10 +106,11 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(Catch2)
 
-include_directories(include)
+add_subdirectory(tests)
+
 enable_testing()
 
-add_executable(naive_tests tests/naive_tests.cpp src/naive.cpp)
-target_link_libraries(naive_tests PRIVATE Catch2::Catch2)
-target_include_directories(naive_tests PRIVATE include)
+add_executable(wfa_tests ${WFA_TEST_FILES})
+target_link_libraries(wfa_tests PRIVATE Catch2::Catch2 ${LIB_WFA})
+
 add_test(NAME NaiveAlignmentTests COMMAND naive_tests)
