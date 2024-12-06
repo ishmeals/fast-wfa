@@ -29,7 +29,7 @@ namespace wfa {
 
 	void next_simd(wavefront_t& wavefront, int32_t s, int32_t x, int32_t o, int32_t e);
 
-	int32_t wavefront_simd(std::string_view a, std::string_view b, int32_t x, int32_t o, int32_t e);
+	int32_t wavefront_simd(std::string_view a, std::string_view b, int32_t x, int32_t o, int32_t e, wavefront_arena_t& arena);
 
 
 }
