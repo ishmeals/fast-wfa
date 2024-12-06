@@ -115,9 +115,11 @@ void wfa::next_simd(wavefront_t& wavefront, int32_t s, int32_t x, int32_t o, int
 	while (high - k + 1 > simd_size) {
 		simd_type M_soe_down_vec;
 		simd_type M_soe_up_vec;
+		
 		if (s - o - e >= 0) {
-			auto& soe = wavefront.views[s - o - e];
-			if (soe.valid) {
+			int32_t soe_index = wavefront.mapping[s - o - e];
+			if (soe_index != -1) {
+				auto& soe = wavefront.views[soe_index];
 				auto M_soe_down = [&soe, k](size_t i) {return soe.lookup(match, k + static_cast<int32_t>(i) - 1); };
 				M_soe_down_vec = simd_type(M_soe_down);
 				auto M_soe_up = [&soe, k](size_t i) {return soe.lookup(match, k + static_cast<int32_t>(i) + 1); };
@@ -136,8 +138,9 @@ void wfa::next_simd(wavefront_t& wavefront, int32_t s, int32_t x, int32_t o, int
 		simd_type I_se_down_vec;
 		simd_type D_se_up_vec;
 		if (s - e >= 0) {
-			auto& se = wavefront.views[s-e];
-			if (se.valid) {
+			int32_t se_index = wavefront.mapping[s - e];
+			if (se_index != -1) {
+				auto& se = wavefront.views[se_index];
 				auto I_se_down = [&se, k](size_t i) {return se.lookup(ins, k + static_cast<int32_t>(i) - 1); };
 				I_se_down_vec = simd_type(I_se_down);
 				auto D_se_up = [&se, k](size_t i) {return se.lookup(del, k + static_cast<int32_t>(i) + 1); };
@@ -155,8 +158,9 @@ void wfa::next_simd(wavefront_t& wavefront, int32_t s, int32_t x, int32_t o, int
 
 		simd_type M_sx_vec;
 		if (s - x >= 0) {
-			auto& sx = wavefront.views[s-x];
-			if (sx.valid) {
+			int32_t sx_index = wavefront.mapping[s - x];
+			if (sx_index != -1) {
+				auto& sx = wavefront.views[sx_index];
 				auto M_sx = [&sx, k](size_t i) {return sx.lookup(match, k + static_cast<int32_t>(i)); };
 				M_sx_vec = simd_type(M_sx);
 			}
