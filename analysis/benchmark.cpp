@@ -14,15 +14,11 @@
 void wfalib2_align(const std::string& seq1, const std::string& seq2, int x, int o, int e) {
     wfa::WFAlignerGapAffine aligner(x, o, e, wfa::WFAligner::Alignment, wfa::WFAligner::MemoryHigh);
     aligner.alignEnd2End(seq1, seq2);
-
-    // Output results (optional)
-    std::cout << "Alignment score (WFA2): " << aligner.getAlignmentScore() << "\n";
-    std::cout << "CIGAR: " << aligner.getAlignmentCigar() << "\n";
 }
 
 // Run VTune profiler
 void run_vtune(const std::string& algorithm, const std::string& command) {
-    std::string vtune_dir = "vtune_results/" + algorithm;
+    std::string vtune_dir = "results/" + algorithm;
     std::filesystem::create_directories(vtune_dir); // Ensure directory exists
     std::string vtune_command = "vtune -collect hotspots -result-dir " + vtune_dir + " -- " + command;
 
@@ -50,11 +46,14 @@ void benchmark_algorithm(const std::string& algorithm_name, Func align_func,
     std::cout << "Algorithm: " << algorithm_name << "\n";
     std::cout << "Execution Time: " << elapsed_time.count() << " seconds\n";
 
-    run_vtune(algorithm_name, binary_path);
+    // VTune profiling
+    std::string command = "./wfa2_comparison " + seq1 + " " + seq2 + " " + std::to_string(x)
+        + " " + std::to_string(o) + " " + std::to_string(e) + " " + algorithm_name;
+    run_vtune(algorithm_name, command);
 }
 
 int main(int argc, char* argv[]) {
-    if (argc < 6) {
+    if (argc < 7) {
         std::cerr << "Usage: " << argv[0] << " <seq1> <seq2> <x> <o> <e> [algorithm]\n";
         return 1;
     }
@@ -65,28 +64,27 @@ int main(int argc, char* argv[]) {
     int x = std::stoi(argv[3]);
     int o = std::stoi(argv[4]);
     int e = std::stoi(argv[5]);
+    bool profile
 
+    // Vtune running
     if (argc == 7) {
         std::string selected_algorithm = argv[6];
         if (selected_algorithm == "naive") {
-            benchmark_algorithm("Naive", wfa::naive, seq1, seq2, x, o, e);
+            wfa::naive(seq1, seq2, x, o, e);
         }
         else if (selected_algorithm == "dp_wfa") {
-            benchmark_algorithm("DP_WFA", wfa::wavefront_dp, seq1, seq2, x, o, e);
+            wfa::wavefront_dp(seq1, seq2, x, o, e);
         }
         else if (selected_algorithm == "trad_wfa") {
-            benchmark_algorithm("Traditional_WFA", wfa::wavefront, seq1, seq2, x, o, e);
+            wfa::wavefront(seq1, seq2, x, o, e);
         }
         else if (selected_algorithm == "wfa2_lib") {
-            benchmark_algorithm("WFA2_Lib", wfalib2_align, seq1, seq2, x, o, e);
+            wfalib2_align(seq1, seq2, x, o, e);
         }
-        else {
-            std::cerr << "Unknown algorithm: " << selected_algorithm << "\n";
-            return 1;
-        }
+
     }
     else {
-        // Run all algorithms
+        // Benchmarks
         benchmark_algorithm("Naive", wfa::naive, seq1, seq2, x, o, e);
         benchmark_algorithm("DP_WFA", wfa::wavefront_dp, seq1, seq2, x, o, e);
         benchmark_algorithm("Traditional_WFA", wfa::wavefront, seq1, seq2, x, o, e);
