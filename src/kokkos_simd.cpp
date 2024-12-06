@@ -56,14 +56,14 @@ bool wfa::extend(wavefront_t& wavefront, std::string_view a, std::string_view b,
 		while (not mismatch) {
 			if (v >= static_cast<int32_t>(a.size()) or h >= static_cast<int32_t>(b.size())) {
 				//fmt::println("Extend out of bounds with: {} {}", v, h);
-				continue;
+				break;
 			}
 			const char v_c = a.at(v);
 			const char h_c = b.at(h);
 			if (v_c == h_c) {
-				if (v == static_cast<int32_t>(a.size()) - 1 and h == static_cast<int32_t>(b.size()) - 1) {
+				/*if (v == static_cast<int32_t>(a.size()) - 1 and h == static_cast<int32_t>(b.size()) - 1) {
 					return true;
-				}
+				}*/
 				++starting_index;
 				++v;
 				++h;
@@ -142,11 +142,19 @@ int32_t wfa::wavefront_simd(std::string_view a, std::string_view b, int32_t x, i
 	bool matched = false;
 
 	int32_t score = 0;
+
+	int32_t final_k = static_cast<int32_t>(b.size()) - static_cast<int32_t>(a.size());
+	int32_t final_offset = static_cast<int32_t>(b.size());
+
 	while (not matched) {
-		matched = extend(wavefront, a, b, score);
-		if (matched) {
+		/*matched =*/ extend(wavefront, a, b, score);
+		std::vector<int32_t>& matchfront_back = wavefront.data.back()[2];
+		int32_t k_low = wavefront.wave_size(score, true);
+		if (matchfront_back[final_k - k_low] >= final_offset) {
+			matched = true;
 			break;
 		}
+
 		if (score == 0) {
 			score += std::min(x, o + e);
 		}
