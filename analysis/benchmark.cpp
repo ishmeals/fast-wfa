@@ -11,19 +11,22 @@ int main() {
 	auto sequences = wfa::modify_sequences(100, 100000, 0.2);
 
     auto start = std::chrono::system_clock::now();
+    wfa::wavefront_arena_t arena1;
     for (const auto& pair : sequences) {
         const std::string& a = pair.first;
         const std::string& b = pair.second;
-        wfa::wavefront(a, b, 4, 6, 2);
+        wfa::wavefront(a, b, 4, 6, 2, arena1);
+        //fmt::println("--");
     }
     auto end = std::chrono::system_clock::now();
     fmt::println("Wavefront: {:%T}", end - start);
 
     start = std::chrono::system_clock::now();
+    wfa::wavefront_arena_t arena2;
     for (const auto& pair : sequences) {
         const std::string& a = pair.first;
         const std::string& b = pair.second;
-        wfa::wavefront_simd(a, b, 4, 6, 2);
+        wfa::wavefront_simd(a, b, 4, 6, 2, arena2);
     }
     end = std::chrono::system_clock::now();
     fmt::println("Wavefront SIMD: {:%T}", end - start);
