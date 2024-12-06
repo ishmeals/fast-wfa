@@ -3,11 +3,8 @@
 #include "fmt/format.h"
 #include "fmt/ranges.h"
 
-int32_t wfa::wavefront_t::lookup(int32_t score, int32_t k, int32_t row) {
+int32_t wfa::wavefront_t::lookup(int32_t score, int32_t column, int32_t k) {
 	if (score < 0) {
-		return -1;
-	}
-	if (row < 0) {
 		return -1;
 	}
 	auto iter = score_to_index.find(score);
@@ -15,7 +12,10 @@ int32_t wfa::wavefront_t::lookup(int32_t score, int32_t k, int32_t row) {
 		return -1;
 	}
 	int32_t low_correction = wave_size(score, true);
-	int32_t column = k - low_correction;
+	int32_t row = k - low_correction;
+	if (row < 0) {
+		return -1;
+	}
 	if (row > static_cast<int32_t>(data[iter->second][column].size()) - 1) {
 		return -1;
 	}
@@ -40,12 +40,6 @@ void wfa::wavefront_t::print() {
 		fmt::println("I: {}\nD: {}\nM: {}", data[pair.second][ins], data[pair.second][del], data[pair.second][match]);
 	}
 }
-//int32_t wfa::bn_s(wavefront_t& wavefront, int32_t score, int32_t column, int32_t row) {
-//	if (score < 0) {
-//		return 0;
-//	}
-//	return wavefront[score][column][row];
-//}
 
 bool wfa::extend(wavefront_t& wavefront, std::string_view a, std::string_view b, int32_t score) {
 	std::vector<int32_t>& matchfront_back = wavefront.data.back()[2];
@@ -53,12 +47,15 @@ bool wfa::extend(wavefront_t& wavefront, std::string_view a, std::string_view b,
 	int32_t k_high = wavefront.wave_size(score, false);
 	for (int32_t k = k_low; k < k_high + 1; ++k) {
 		int32_t starting_index = matchfront_back[k - k_low];
+		if (starting_index == -1) {
+			continue;
+		}
 		int32_t v = starting_index - k;
 		int32_t h = starting_index;
 		bool mismatch = false;
 		while (not mismatch) {
 			if (v >= static_cast<int32_t>(a.size()) or h >= static_cast<int32_t>(b.size())) {
-				fmt::println("Extend out of bounds with: {} {}", v, h);
+				//fmt::println("Extend out of bounds with: {} {}", v, h);
 				continue;
 			}
 			const char v_c = a.at(v);
@@ -125,7 +122,14 @@ void wfa::next(wavefront_t& wavefront, int32_t s, int32_t x, int32_t o, int32_t 
 			++wave_cur[ins][k - low];
 		}
 		wave_cur[del][k - low] = std::max({ wavefront.lookup(s - o - e, match, k + 1), wavefront.lookup(s - e, del, k + 1) });
-		wave_cur[match][k - low] = std::max({ wave_cur[ins][k - low], wave_cur[del][k - low], wavefront.lookup(s - x, match, k) + 1});
+		int32_t match_sxk = wavefront.lookup(s - x, match, k);
+		if (match_sxk < 0) {
+			wave_cur[match][k - low] = std::max({ wave_cur[ins][k - low], wave_cur[del][k - low], -1 });
+		}
+		else {
+			wave_cur[match][k - low] = std::max({ wave_cur[ins][k - low], wave_cur[del][k - low], match_sxk + 1});
+		}
+		
 	}
 }
 
@@ -158,7 +162,9 @@ int32_t wfa::wavefront_simd(std::string_view a, std::string_view b, int32_t x, i
 			}
 		}
 		next(wavefront, score, x, o, e);
+		//wavefront.print();
+		//fmt::println("---");
 	}
-	wavefront.print();
-	return score;
+	//wavefront.print();
+	return -1*score;
 }
