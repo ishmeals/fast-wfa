@@ -68,7 +68,7 @@ if(MSVC)
 endif()
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-	target_compile_options(${LIB_WFA} PUBLIC -stdlib=libc++ -Werror -W -pedantic -fexperimental-library )
+	target_compile_options(${LIB_WFA} PUBLIC -Werror -W -pedantic -fexperimental-library )
 	# set_target_properties(${LIB_SYNTH} PROPERTIES CXX_CLANG_TIDY "clang-tidy")
 endif()
 
@@ -88,7 +88,7 @@ set_property(TARGET wfa_tool PROPERTY CXX_STANDARD 20)
 target_link_libraries(wfa_tool PRIVATE ${LIB_WFA})
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-	target_compile_options(wfa_tool PUBLIC -stdlib=libc++ -Werror -W -pedantic -fexperimental-library )
+	target_compile_options(wfa_tool PUBLIC -Werror -W -pedantic -fexperimental-library )
 	# set_target_properties(${LIB_SYNTH} PROPERTIES CXX_CLANG_TIDY "clang-tidy")
 endif()
 

@@ -3,49 +3,6 @@
 #include "fmt/format.h"
 #include "fmt/ranges.h"
 
-//int32_t wfa::wavefront_t::lookup(int32_t score, int32_t column, int32_t k) {
-//	if (score < 0) {
-//		return -1;
-//	}
-//	/*auto iter = score_to_index.find(score);
-//	if (iter == score_to_index.end()) {
-//		return -1;
-//	}*/
-//	int32_t low_correction = wave_size(score, true);
-//	int32_t row = k - low_correction;
-//	if (row < 0) {
-//		return -1;
-//	}
-//	//if (row > static_cast<int32_t>(data[iter->second][column].size()) - 1) {
-//	if (row > static_cast<int32_t>(data[score][column].size()) - 1) {
-//		return -1;
-//	}
-//	return (data[score][column][row]);
-//}
-//
-//int32_t wfa::wavefront_t::wave_size(int32_t score, bool low) {
-//	/*auto iter = score_to_index.find(score);
-//	if (iter == score_to_index.end()) {
-//		return 0;
-//	}*/
-//	if (score < 0) {
-//		return -1;
-//	}
-//
-//	auto& pair = low_hi[score];
-//	if (low) {
-//		return pair[0];
-//	}
-//	return pair[1];
-//}
-//
-//void wfa::wavefront_t::print() {
-//	/*for (const auto& pair : score_to_index) {
-//		fmt::println("Score: {}", pair.first);
-//		fmt::println("I: {}\nD: {}\nM: {}", data[pair.second][ins], data[pair.second][del], data[pair.second][match]);
-//	}*/
-//}
-
 bool wfa::extend_simd(wavefront_t& wavefront, std::string_view a, std::string_view b, int32_t score) {
 	std::vector<int32_t>& matchfront_back = wavefront.data.back()[2];
 	int32_t k_low = wavefront.wave_size(score, true);
@@ -83,29 +40,6 @@ bool wfa::extend_simd(wavefront_t& wavefront, std::string_view a, std::string_vi
 }
 
 void wfa::next_simd(wavefront_t& wavefront, int32_t s, int32_t x, int32_t o, int32_t e) {
-	/*int32_t m_high_sx = 0;
-	int32_t m_low_sx = 0;
-	int32_t m_high_soe = 0;
-	int32_t m_low_soe = 0;
-	int32_t i_high_se = 0;
-	int32_t i_low_se = 0;
-	int32_t d_high_se = 0;
-	int32_t d_low_se = 0;
-	if (s - x >= 0) {
-		m_high_sx = wavefront.wave_size(s - x, false);
-		m_low_sx = wavefront.wave_size(s - x, true);
-	}
-	if (s - o - e >= 0) {
-		m_high_soe = wavefront.wave_size(s - o - e, false);
-		m_low_soe = wavefront.wave_size(s - o - e, true);
-	}
-	if (s - e >= 0) {
-		i_high_se = wavefront.wave_size(s - e, false);
-		i_low_se = wavefront.wave_size(s - e, true);
-		d_high_se = wavefront.wave_size(s - e, false);
-		d_low_se = wavefront.wave_size(s - e, true);
-	}*/
-
 	int32_t m_high_sx = wavefront.wave_size(s - x, false);
 	int32_t m_low_sx = wavefront.wave_size(s - x, true);
 	int32_t m_high_soe = wavefront.wave_size(s - o - e, false);

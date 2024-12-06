@@ -40,6 +40,34 @@
       "cacheVariables": { "CMAKE_BUILD_TYPE": "Release" }
     },
     {
+      "name": "windows-clang-base",
+      "hidden": true,
+      "inherits": "windows-base",
+      "architecture": {
+        "value": "x64",
+        "strategy": "external"
+      },
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "clang.exe",
+        "CMAKE_CXX_COMPILER": "clang++.exe",
+        "VCPKG_TARGET_TRIPLET": "x64-win-llvm"
+      }
+    },
+    {
+      "name": "x64-debug-clang",
+      "inherits": "windows-clang-base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "x64-release-clang",
+      "inherits": "windows-clang-base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
       "name": "x64-linux",
       "hidden": true,
       "generator": "Ninja",
