@@ -11,23 +11,11 @@
 #include "include/wfa_simd.hpp"
 #include "bindings/cpp/WFAligner.hpp"
 
-wavefront_aligner_t* init_aligner(int x, int o, int e) {
-    wavefront_aligner_attr_t attributes = wavefront_aligner_attr_default;
-    attributes.distance_metric = gap_affine;
-    attributes.affine_penalties.mismatch = x;
-    attributes.affine_penalties.gap_opening = o;
-    attributes.affine_penalties.gap_extension = e;
-    attributes.alignment_scope = compute_score;
-
-    return wavefront_aligner_new(&attributes);
-}
-
-int wfalib2_align(std::string_view a, std::string_view b, wavefront_aligner_t* wf_aligner) {
+void wfalib2_align(std::string_view a, std::string_view b, int x, int o, int e) {
     std::string pattern(a);
     std::string text(b);
-
-    wavefront_align(wf_aligner, pattern.c_str(), (int)pattern.size(), text.c_str(), (int)text.size());
-    return wf_aligner->getAlignmentScore();
+    wfa::WFAlignerGapAffine aligner(x, o, e, wfa::WFAligner::Alignment, wfa::WFAligner::MemoryHigh);
+    aligner.alignEnd2End(a, b);
 }
 
 void run_vtune(const std::string& algorithm, const std::string& output_file, const std::string& command) {
@@ -43,8 +31,7 @@ void benchmark_algorithm(const std::string& algorithm_name, Func align_func, con
     auto start = std::chrono::high_resolution_clock::now();
 
     // Run the alignment algorithm
-    if (algorithm_name == "WFA2_Lib") align_func(seq1, seq2, wf_aligner);
-    else align_func(seq1, seq2, x, o, e);
+    align_func(seq1, seq2, x, o, e);
 
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> elapsed_time = end - start;
@@ -68,7 +55,7 @@ int main(int argc, char* argv[]) {
     int o = std::atoi(argv[4]);
     int e = std::atoi(argv[5]);
 
-    wavefront_aligner_t* aligner = init_aligner(x, o, e);
+    wfa::WFAlignerGapAffine aligner(4, 6, 2, wfa::WFAligner::Alignment, wfa::WFAligner::MemoryHigh);
 
     if (argc == 7) {
         std::string selected_algorithm = argv[6];
