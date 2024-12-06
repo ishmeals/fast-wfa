@@ -8,7 +8,7 @@
 
 int main() {
 	
-	auto sequences = wfa::modify_sequences(100, 100000, 0.2);
+	auto sequences = wfa::modify_sequences(100, 100000, 0.01);
 
     auto start = std::chrono::system_clock::now();
     wfa::wavefront_arena_t arena1;
