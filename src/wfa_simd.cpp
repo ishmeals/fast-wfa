@@ -5,12 +5,11 @@
 
 
 
-bool wfa::extend_simd(wavefront_t& wavefront, std::string_view a, std::string_view b, int32_t score) {
-	std::vector<int32_t>& matchfront_back = wavefront.data.back()[2];
-	int32_t k_low = wavefront.wave_size(score, true);
-	int32_t k_high = wavefront.wave_size(score, false);
-	for (int32_t k = k_low; k < k_high + 1; ++k) {
-		int32_t starting_index = matchfront_back[k - k_low];
+bool wfa::extend_simd(wavefront_t& wavefront, std::string_view a, std::string_view b) {
+	wavefront_entry_t& entry = wavefront.data.back();
+	std::span<int32_t> matchfront_back(entry.data.data() + match * entry.number_per_col, entry.number_per_col);
+	for (int32_t k = entry.low; k < entry.high + 1; ++k) {
+		int32_t starting_index = matchfront_back[k - entry.low];
 		if (starting_index == -1) {
 			continue;
 		}
@@ -75,20 +74,20 @@ bool wfa::extend_simd(wavefront_t& wavefront, std::string_view a, std::string_vi
 			}
 		}
 		
-		matchfront_back[k - k_low] = starting_index;
+		matchfront_back[k - entry.low] = starting_index;
 	}
 	return false;
 }
 
 void wfa::next_simd(wavefront_t& wavefront, int32_t s, int32_t x, int32_t o, int32_t e) {
-	int32_t m_high_sx = wavefront.wave_size(s - x, false);
-	int32_t m_low_sx = wavefront.wave_size(s - x, true);
-	int32_t m_high_soe = wavefront.wave_size(s - o - e, false);
-	int32_t m_low_soe = wavefront.wave_size(s - o - e, true);
-	int32_t i_high_se = wavefront.wave_size(s - e, false);
-	int32_t i_low_se = wavefront.wave_size(s - e, true);
-	int32_t d_high_se = wavefront.wave_size(s - e, false);
-	int32_t d_low_se = wavefront.wave_size(s - e, true);
+	int32_t m_high_sx = wavefront.wave_size_high(s - x);
+	int32_t m_low_sx = wavefront.wave_size_low(s - x);
+	int32_t m_high_soe = wavefront.wave_size_high(s - o - e);
+	int32_t m_low_soe = wavefront.wave_size_low(s - o - e);
+	int32_t i_high_se = wavefront.wave_size_high(s - e);
+	int32_t i_low_se = wavefront.wave_size_low(s - e);
+	int32_t d_high_se = wavefront.wave_size_high(s - e);
+	int32_t d_low_se = wavefront.wave_size_low(s - e);
 	
 	
 	int32_t high = std::max({m_high_sx, m_high_soe, i_high_se, d_high_se}) + 1;
@@ -97,16 +96,17 @@ void wfa::next_simd(wavefront_t& wavefront, int32_t s, int32_t x, int32_t o, int
 		high = 0;
 		low = 0;
 	}
-	auto& low_hi_cur = wavefront.low_hi.emplace_back();
+	/*auto& low_hi_cur = wavefront.low_hi.emplace_back();
 	low_hi_cur[0] = low;
-	low_hi_cur[1] = high;
+	low_hi_cur[1] = high;*/
+	auto& wave_cur = wavefront.data.emplace_back(low, high);
 
 	wavefront.valid_scores.emplace(s);
-	auto& wave_cur = wavefront.data.emplace_back(std::array<std::vector<int32_t>, 3>{
+	/*auto& wave_cur = wavefront.data.emplace_back(std::array<std::vector<int32_t>, 3>{
 		std::vector<int32_t>(high - low + 1),
 		std::vector<int32_t>(high - low + 1),
 		std::vector<int32_t>(high - low + 1)
-	});
+	});*/
 
 	constexpr int32_t simd_size = static_cast<int32_t>(simd_type::size());
 
@@ -132,27 +132,43 @@ void wfa::next_simd(wavefront_t& wavefront, int32_t s, int32_t x, int32_t o, int
 		simd_type M = Kokkos::max(I, D);
 		M = Kokkos::max(M, M_sx_vec);
 
-		I.copy_to(wave_cur[ins].data() + (k - low), tag_type());
-		D.copy_to(wave_cur[del].data() + (k - low), tag_type());
-		M.copy_to(wave_cur[match].data() + (k - low), tag_type());
+		I.copy_to(wave_cur.start_ptr(ins) + (k - low), tag_type());
+		D.copy_to(wave_cur.start_ptr(del) + (k - low), tag_type());
+		M.copy_to(wave_cur.start_ptr(match) + (k - low), tag_type());
 
 		k += simd_size;
 		//fmt::println("{}", simd_size);
 	}
 	//fmt::println("skipped to k = {}", k);
-	for (/*int32_t k = low*/; k < high + 1; ++k) {
-		wave_cur[ins][k - low] = std::max({wavefront.lookup(s - o - e, match, k - 1), wavefront.lookup(s - e, ins, k - 1)});
-		if (wave_cur[ins][k - low] != -1) {
-			++wave_cur[ins][k - low];
+	//for (/*int32_t k = low*/; k < high + 1; ++k) {
+	//	wave_cur[ins][k - low] = std::max({wavefront.lookup(s - o - e, match, k - 1), wavefront.lookup(s - e, ins, k - 1)});
+	//	if (wave_cur[ins][k - low] != -1) {
+	//		++wave_cur[ins][k - low];
+	//	}
+	//	wave_cur[del][k - low] = std::max({ wavefront.lookup(s - o - e, match, k + 1), wavefront.lookup(s - e, del, k + 1) });
+	//	int32_t match_sxk = wavefront.lookup(s - x, match, k);
+	//	if (match_sxk < 0) {
+	//		wave_cur[match][k - low] = std::max({ wave_cur[ins][k - low], wave_cur[del][k - low], -1 });
+	//	}
+	//	else {
+	//		wave_cur[match][k - low] = std::max({ wave_cur[ins][k - low], wave_cur[del][k - low], match_sxk + 1});
+	//	}
+	//}
+
+	for (; k < high + 1; ++k) {
+		wave_cur.no_bound(ins, k - low) = std::max({ wavefront.lookup(s - o - e, match, k - 1), wavefront.lookup(s - e, ins, k - 1) });
+		if (wave_cur.no_bound(ins, k - low) != -1) {
+			++wave_cur.no_bound(ins, k - low);
 		}
-		wave_cur[del][k - low] = std::max({ wavefront.lookup(s - o - e, match, k + 1), wavefront.lookup(s - e, del, k + 1) });
+		wave_cur.no_bound(del, k - low) = std::max({ wavefront.lookup(s - o - e, match, k + 1), wavefront.lookup(s - e, del, k + 1) });
 		int32_t match_sxk = wavefront.lookup(s - x, match, k);
 		if (match_sxk < 0) {
-			wave_cur[match][k - low] = std::max({ wave_cur[ins][k - low], wave_cur[del][k - low], -1 });
+			wave_cur.no_bound(match, k - low) = std::max({ wave_cur.no_bound(ins, k - low), wave_cur.no_bound(del, k - low), -1 });
 		}
 		else {
-			wave_cur[match][k - low] = std::max({ wave_cur[ins][k - low], wave_cur[del][k - low], match_sxk + 1});
+			wave_cur.no_bound(match, k - low) = std::max({ wave_cur.no_bound(ins, k - low), wave_cur.no_bound(del, k - low), match_sxk + 1 });
 		}
+
 	}
 
 }
@@ -168,9 +184,10 @@ int32_t wfa::wavefront_simd(std::string_view a, std::string_view b, int32_t x, i
 	}*/
 
 	wavefront_t wavefront;
-	wavefront.data.emplace_back(std::array<std::vector<int32_t>, 3>{std::vector<int32_t>{-1}, std::vector<int32_t>{-1}, std::vector<int32_t>{0}});
+	auto& first = wavefront.data.emplace_back(0, 0);
+	first.data = { -1, -1, 0 };
 	
-	wavefront.low_hi.emplace_back(std::array{0,0});
+	//wavefront.low_hi.emplace_back(std::array{0,0});
 	wavefront.valid_scores.emplace(0);
 	bool matched = false;
 
@@ -180,12 +197,17 @@ int32_t wfa::wavefront_simd(std::string_view a, std::string_view b, int32_t x, i
 	int32_t final_offset = static_cast<int32_t>(b.size());
 
 	while (not matched) {
-		extend_simd(wavefront, a, b, score);
-		std::vector<int32_t>& matchfront_back = wavefront.data.back()[2];
+		extend_simd(wavefront, a, b);
+		auto& matchfront_back = wavefront.data.back();
+		//int32_t k_low = wavefront.wave_size(score, true);
+		if (matchfront_back.lookup(match, final_k) >= final_offset) {
+			break;
+		}
+		/*std::vector<int32_t>& matchfront_back = wavefront.data.back()[2];
 		int32_t k_low = wavefront.wave_size(score, true);
 		if (matchfront_back[final_k - k_low] >= final_offset) {
 			break;
-		}
+		}*/
 		else {
 			score = score + 1;
 			while (not (
@@ -193,8 +215,9 @@ int32_t wfa::wavefront_simd(std::string_view a, std::string_view b, int32_t x, i
 				or wavefront.valid_scores.contains(score - e - o)
 				or (wavefront.valid_scores.contains(score - e) and (score - e >= o))
 			)) {
-				wavefront.data.emplace_back(std::array<std::vector<int32_t>, 3>{std::vector<int32_t>{-1}, std::vector<int32_t>{-1}, std::vector<int32_t>{-1}});
-				wavefront.low_hi.emplace_back(std::array{ 0,0 });
+				//wavefront.data.emplace_back(std::array<std::vector<int32_t>, 3>{std::vector<int32_t>{-1}, std::vector<int32_t>{-1}, std::vector<int32_t>{-1}});
+				wavefront.data.emplace_back(0, 0);
+				//wavefront.low_hi.emplace_back(std::array{ 0,0 });
 				++score;
 			}
 		}

@@ -25,7 +25,7 @@ namespace wfa {
 	using mask_type = Kokkos::Experimental::native_simd_mask<int32_t>;
 	using tag_type = Kokkos::Experimental::element_aligned_tag;
 
-	bool extend_simd(wavefront_t& wavefront, std::string_view a, std::string_view b, int32_t score);
+	bool extend_simd(wavefront_t& wavefront, std::string_view a, std::string_view b);
 
 	void next_simd(wavefront_t& wavefront, int32_t s, int32_t x, int32_t o, int32_t e);
 

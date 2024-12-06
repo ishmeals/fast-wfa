@@ -13,13 +13,30 @@ namespace wfa {
 	int32_t constexpr del = 1;
 	int32_t constexpr match = 2;
 
+	struct wavefront_entry_t {
+		std::vector<int32_t> data;
+		int32_t low;
+		int32_t high;
+		int32_t number_per_col;
+
+		int32_t lookup(int32_t column, int32_t k);
+		void set(int32_t column, int32_t k, int32_t val);
+		int32_t& no_bound(int32_t column, int32_t row);
+		int32_t* start_ptr(int32_t column);
+
+		wavefront_entry_t(int32_t low, int32_t high);
+	};
+
 	struct wavefront_t {
-		std::vector<std::array<std::vector<int32_t>, 3>> data;
-		std::vector<std::array<int32_t, 2>> low_hi;
+		//std::vector<std::array<std::vector<int32_t>, 3>> data;
+		std::vector<wavefront_entry_t> data;
+		//std::vector<std::array<int32_t, 2>> low_hi;
 		ankerl::unordered_dense::set<int32_t> valid_scores;
 
 		int32_t lookup(int32_t score, int32_t column, int32_t k);
-		int32_t wave_size(int32_t score, bool low);
+		int32_t wave_size_low(int32_t score);
+		int32_t wave_size_high(int32_t score);
+		
 
 		void print();
 	};
@@ -27,7 +44,7 @@ namespace wfa {
 	//bounded score lookup
 	//int32_t bn_s(wavefront_t& wavefront, int32_t score, int32_t column, int32_t row);
 
-	bool extend(wavefront_t& wavefront, std::string_view a, std::string_view b, int32_t score);
+	bool extend(wavefront_t& wavefront, std::string_view a, std::string_view b);
 
 	void next(wavefront_t& wavefront, int32_t s, int32_t x, int32_t o, int32_t e);
 
