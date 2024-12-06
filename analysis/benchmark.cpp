@@ -21,7 +21,7 @@ void wfalib2_align(const std::string& seq1, const std::string& seq2, int x, int 
 }
 
 // Run VTune profiler
-void run_vtune(const std::string& algorithm, const std::string& binary_path, const std::string& command) {
+void run_vtune(const std::string& algorithm, const std::string& command) {
     std::string vtune_dir = "vtune_results/" + algorithm;
     std::filesystem::create_directories(vtune_dir); // Ensure directory exists
     std::string vtune_command = "vtune -collect hotspots -result-dir " + vtune_dir + " -- " + command;
@@ -50,9 +50,7 @@ void benchmark_algorithm(const std::string& algorithm_name, Func align_func,
     std::cout << "Algorithm: " << algorithm_name << "\n";
     std::cout << "Execution Time: " << elapsed_time.count() << " seconds\n";
 
-    // VTune profiling
-    std::string binary_path = "./" + algorithm_name + "_binary";
-    run_vtune(algorithm_name, binary_path, binary_path);
+    run_vtune(algorithm_name, binary_path);
 }
 
 int main(int argc, char* argv[]) {
