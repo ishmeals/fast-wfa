@@ -26,9 +26,8 @@ int wfalib2_align(std::string_view a, std::string_view b, wavefront_aligner_t* w
     std::string pattern(a);
     std::string text(b);
 
-    wavefront_aligner_t* wf_aligner = wavefront_aligner_new(&attributes);
     wavefront_align(wf_aligner, pattern.c_str(), (int)pattern.size(), text.c_str(), (int)text.size());
-    return wf_aligner->cigar.score;
+    return wf_aligner->getAlignmentScore();
 }
 
 void run_vtune(const std::string& algorithm, const std::string& output_file, const std::string& command) {
@@ -40,11 +39,12 @@ void run_vtune(const std::string& algorithm, const std::string& output_file, con
 
 // Benchmarking function
 template <typename Func>
-void benchmark_algorithm(const std::string& algorithm_name, Func align_func, const std::string& seq1, const std::string& seq2, int x, int o, int e) {
+void benchmark_algorithm(const std::string& algorithm_name, Func align_func, const std::string& seq1, const std::string& seq2, int x, int o, int e, wavefront_aligner_t* wf_aligner) {
     auto start = std::chrono::high_resolution_clock::now();
 
     // Run the alignment algorithm
-    align_func(seq1, seq2, x, o, e);
+    if (algorithm_name == "WFA2_Lib") align_func(seq1, seq2, wf_aligner);
+    else align_func(seq1, seq2, x, o, e);
 
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> elapsed_time = end - start;
@@ -91,5 +91,6 @@ int main(int argc, char* argv[]) {
         benchmark_algorithm("WFA2_Lib", wfalib2_align, seq1, seq2, x, o, e);
     }
 
+    wavefront_aligner_delete(aligner);
     return 0;
 }
