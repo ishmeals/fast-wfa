@@ -59,7 +59,7 @@ void run_vtune(const std::string& executable, const std::string& seq1, const std
 }
 
 int main(int argc, char* argv[]) {
-    std::string out = "output.txt"
+    std::string out = "output.txt";
     std::ofstream output_file(out);
     if (!output_file.is_open()) {
         std::cerr << "Failed to open output file.\n";
