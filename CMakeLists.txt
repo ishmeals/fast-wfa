@@ -47,8 +47,8 @@ FetchContent_Declare(
 # Fetch WFA2-lib
 FetchContent_Declare(
   WFA2lib
-  GIT_REPOSITORY https://github.com/smarco/WFA2-lib.git
-  GIT_TAG        v2.3.5
+  GIT_REPOSITORY https://github.com/QuantumFelidae/WFA2-lib.git
+  GIT_TAG        main
 )
 
 
