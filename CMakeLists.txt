@@ -44,8 +44,26 @@ FetchContent_Declare(
   GIT_SHALLOW TRUE
 ) # 10.2.1
 
+# Fetch WFA2-lib
+FetchContent_Declare(
+  WFA2lib
+  GIT_REPOSITORY https://github.com/QuantumFelidae/WFA2-lib.git
+  GIT_TAG        main
+)
+
+FetchContent_Declare(
+	unordered_dense
+	GIT_REPOSITORY https://github.com/martinus/unordered_dense.git
+	GIT_TAG v4.4.0
+	GIT_SHALLOW TRUE
+)
+
+if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+  set(Kokkos_ARCH_NATIVE ON)
+endif()
+#set(Kokkos_ENABLE_THREADS ON)
 set(ENABLE_TESTING OFF)
-FetchContent_MakeAvailable(fmt kokkos)
+FetchContent_MakeAvailable(fmt kokkos WFA2lib unordered_dense)
 
 add_subdirectory(src)
 
@@ -68,13 +86,14 @@ if(MSVC)
 endif()
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-	target_compile_options(${LIB_WFA} PUBLIC -stdlib=libc++ -Werror -W -pedantic -fexperimental-library )
+	target_compile_options(${LIB_WFA} PUBLIC -Werror -W -pedantic -fexperimental-library )
 	# set_target_properties(${LIB_SYNTH} PROPERTIES CXX_CLANG_TIDY "clang-tidy")
 endif()
 
 target_link_libraries(${LIB_WFA} PUBLIC
 					fmt::fmt
 					Kokkos::kokkos
+					unordered_dense::unordered_dense
 )
 
 set_property(TARGET ${LIB_WFA} PROPERTY CXX_STANDARD 20)
@@ -88,7 +107,7 @@ set_property(TARGET wfa_tool PROPERTY CXX_STANDARD 20)
 target_link_libraries(wfa_tool PRIVATE ${LIB_WFA})
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-	target_compile_options(wfa_tool PUBLIC -stdlib=libc++ -Werror -W -pedantic -fexperimental-library )
+	target_compile_options(wfa_tool PUBLIC -Werror -W -pedantic -fexperimental-library )
 	# set_target_properties(${LIB_SYNTH} PROPERTIES CXX_CLANG_TIDY "clang-tidy")
 endif()
 
@@ -113,3 +132,12 @@ add_executable(wfa_tests ${WFA_TEST_FILES})
 target_link_libraries(wfa_tests PRIVATE Catch2::Catch2 ${LIB_WFA})
 
 add_test(NAME NaiveAlignmentTests COMMAND naive_tests)
+
+#
+# WFA2-lib 
+#
+
+if (LINUX)
+	add_executable(wfa2_comparison analysis/benchmark.cpp)
+	target_link_libraries(wfa2_comparison PRIVATE ${LIB_WFA} wfa2::wfa2cpp)
+endif()
