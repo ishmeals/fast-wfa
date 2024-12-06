@@ -51,9 +51,19 @@ FetchContent_Declare(
   GIT_TAG        main
 )
 
+FetchContent_Declare(
+	unordered_dense
+	GIT_REPOSITORY https://github.com/martinus/unordered_dense.git
+	GIT_TAG v4.4.0
+	GIT_SHALLOW TRUE
+)
 
+if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+  set(Kokkos_ARCH_NATIVE ON)
+endif()
+#set(Kokkos_ENABLE_THREADS ON)
 set(ENABLE_TESTING OFF)
-FetchContent_MakeAvailable(fmt kokkos WFA2lib)
+FetchContent_MakeAvailable(fmt kokkos WFA2lib unordered_dense)
 
 add_subdirectory(src)
 
@@ -83,6 +93,7 @@ endif()
 target_link_libraries(${LIB_WFA} PUBLIC
 					fmt::fmt
 					Kokkos::kokkos
+					unordered_dense::unordered_dense
 )
 
 set_property(TARGET ${LIB_WFA} PROPERTY CXX_STANDARD 20)
@@ -122,12 +133,11 @@ target_link_libraries(wfa_tests PRIVATE Catch2::Catch2 ${LIB_WFA})
 
 add_test(NAME NaiveAlignmentTests COMMAND naive_tests)
 
-
 #
-# WFA2-lib
+# WFA2-lib 
 #
 
 if (LINUX)
 	add_executable(wfa2_comparison analysis/benchmark.cpp)
-	target_link_libraries(wfa2_comparison PRIVATE ${LIB_WFA} wfa2)
+	target_link_libraries(wfa2_comparison PRIVATE ${LIB_WFA} wfa2::wfa2cpp)
 endif()
