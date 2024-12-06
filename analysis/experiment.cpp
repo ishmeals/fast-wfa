@@ -4,6 +4,9 @@
 #include <vector>
 #include <cstdlib>
 #include <sstream>
+#include <unistd.h>
+#include <sys/types.h>
+#include <pwd.h>
 
 // Function to execute the alignment executable and capture the output time
 double run_alignment(const std::string& executable, double error_rate, int sequence_length, int num_sequences, int x, int o, int e) {
@@ -90,7 +93,7 @@ void experiment_vary_error_rate(const std::string& executable, const std::string
 // Main function
 int main() {
     const std::string executable = "~/fast-wfa/out/build/linux-debug/bin/wfa2_comparison";
-    const std::string output_csv = "~/fast-wfa/results/exp_results.csv";
+    const std::string output_csv = "exp_results.csv";
 
     // Write CSV header
     std::ofstream csv_file(output_csv);
