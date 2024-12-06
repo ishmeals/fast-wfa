@@ -37,7 +37,7 @@
     return std::max({dp[n][m][0], dp[n][m][1], dp[n][m][2]});
 }
 
- int32_t wfa::wavefront(std::string_view a, std::string_view b,  int32_t x,  int32_t o,  int32_t e) {
+ int32_t wfa::wavefront_dp(std::string_view a, std::string_view b,  int32_t x,  int32_t o,  int32_t e) {
      constexpr int32_t INF = static_cast<int32_t>(-1e9);  // Use large negative value to avoid overflow
     size_t n = a.size(), m = b.size();
     std::vector<std::vector<std::array<int, 3>>> dp(

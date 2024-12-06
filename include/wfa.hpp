@@ -1,7 +1,5 @@
 #pragma once
 
-#include "wfa.hpp"
-
 #include <string>
 #include <string_view>
 #include <vector>
@@ -10,7 +8,7 @@
 
 namespace wfa {
 	//using wavefront_t = std::vector<std::array<std::vector<int32_t>, 3>>;
-	/*int32_t constexpr ins = 0;
+	int32_t constexpr ins = 0;
 	int32_t constexpr del = 1;
 	int32_t constexpr match = 2;
 
@@ -23,16 +21,14 @@ namespace wfa {
 		int32_t wave_size(int32_t score, bool low);
 
 		void print();
-	};*/
+	};
 
 	//bounded score lookup
 	//int32_t bn_s(wavefront_t& wavefront, int32_t score, int32_t column, int32_t row);
 
-	bool extend_simd(wavefront_t& wavefront, std::string_view a, std::string_view b, int32_t score);
+	bool extend(wavefront_t& wavefront, std::string_view a, std::string_view b, int32_t score);
 
-	void next_simd(wavefront_t& wavefront, int32_t s, int32_t x, int32_t o, int32_t e);
+	void next(wavefront_t& wavefront, int32_t s, int32_t x, int32_t o, int32_t e);
 
-	int32_t wavefront_simd(std::string_view a, std::string_view b, int32_t x, int32_t o, int32_t e);
-
-
+	int32_t wavefront(std::string_view a, std::string_view b, int32_t x, int32_t o, int32_t e);
 }

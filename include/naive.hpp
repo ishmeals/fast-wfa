@@ -33,6 +33,6 @@ namespace wfa {
 	 * @param e The cost for extending a gap in the alignment.
 	 * @return int The alignment cost between the two sequences.
 	 */
-	int32_t wavefront(std::string_view a, std::string_view b, int32_t x, int32_t o, int32_t e);
+	int32_t wavefront_dp(std::string_view a, std::string_view b, int32_t x, int32_t o, int32_t e);
 }
 
