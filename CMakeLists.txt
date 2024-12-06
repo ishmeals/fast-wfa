@@ -44,8 +44,16 @@ FetchContent_Declare(
   GIT_SHALLOW TRUE
 ) # 10.2.1
 
+# Fetch WFA2-lib
+FetchContent_Declare(
+  WFA2lib
+  GIT_REPOSITORY https://github.com/smarco/WFA2-lib.git
+  GIT_TAG        v2.3.5
+)
+
+
 set(ENABLE_TESTING OFF)
-FetchContent_MakeAvailable(fmt kokkos)
+FetchContent_MakeAvailable(fmt kokkos WFA2lib)
 
 add_subdirectory(src)
 
