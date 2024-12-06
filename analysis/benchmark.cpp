@@ -53,7 +53,7 @@ void benchmark_algorithm(const std::string& algorithm_name, Func align_func,
 }
 
 int main(int argc, char* argv[]) {
-    if (argc < 7) {
+    if (argc < 6) {
         std::cerr << "Usage: " << argv[0] << " <seq1> <seq2> <x> <o> <e> [algorithm]\n";
         return 1;
     }
