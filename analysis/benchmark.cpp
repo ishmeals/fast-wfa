@@ -9,6 +9,7 @@
 #include "include/naive.hpp"
 #include "include/wfa.hpp"
 #include "include/wfa_simd.hpp"
+#include "bindings/cpp/WFAligner.hpp"
 
 wavefront_aligner_t* init_aligner(int x, int o, int e) {
     wavefront_aligner_attr_t attributes = wavefront_aligner_attr_default;
