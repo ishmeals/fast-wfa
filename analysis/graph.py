@@ -1,24 +1,37 @@
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+import os
+import numpy as np
+
+# Dynamically set paths
+repo_base = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+csv_file_path = os.path.join(repo_base, "results", "exp_results.csv")
+output_dir = os.path.join(repo_base, "results")
+
+# Ensure the output directory exists
+os.makedirs(output_dir, exist_ok=True)
 
 # Load data
-file_path = '/mnt/data/exp_results.csv'
-data = pd.read_csv(file_path)
-
-# Create output directory for graphs
-output_dir = "/mnt/data/graphs"
-import os
-os.makedirs(output_dir, exist_ok=True)
+try:
+    data = pd.read_csv(csv_file_path)
+except FileNotFoundError:
+    print(f"Error: {csv_file_path} not found. Ensure the experiment results are generated.")
+    exit(1)
 
 # Set seaborn aesthetics
 sns.set_theme(style="whitegrid")
 
+# Configure matplotlib to use LaTeX for text rendering
+plt.rcParams['text.usetex'] = False  # Disable LaTeX
+plt.rcParams['font.family'] = 'DejaVu Serif'  # Use a font similar to Computer Modern
+plt.rcParams['mathtext.fontset'] = 'cm'  # Use Computer Modern for math
 
 def plot_line(data, x, y, hue, title, x_label, y_label, output_file):
-    """Generate a line plot."""
+    """Generate a line plot with logarithmic y-scale."""
     plt.figure(figsize=(10, 6))
     sns.lineplot(data=data, x=x, y=y, hue=hue, marker="o")
+    plt.yscale("log")  # Set logarithmic scale
     plt.title(title)
     plt.xlabel(x_label)
     plt.ylabel(y_label)
@@ -28,11 +41,56 @@ def plot_line(data, x, y, hue, title, x_label, y_label, output_file):
     plt.close()
 
 
-def plot_heatmap(data, x, y, z, title, x_label, y_label, output_file):
-    """Generate a heatmap."""
+def plot_heatmap_grid(data, x, y, z, title, x_label, y_label, output_file):
+    """
+    Generate a grid of heatmaps for each algorithm.
+    """
+    algorithms = data["Algorithm"].unique()
+    num_algorithms = len(algorithms)
+    cols = 3  # Number of columns in the grid
+    rows = -(-num_algorithms // cols)  # Ceiling division for rows
+
+    fig, axes = plt.subplots(rows, cols, figsize=(5 * cols, 5 * rows), constrained_layout=True)
+
+    for i, algorithm in enumerate(algorithms):
+        row, col = divmod(i, cols)
+        ax = axes[row, col] if rows > 1 else axes[col]
+        algo_data = data[data["Algorithm"] == algorithm]
+        pivot_table = algo_data.pivot_table(index=y, columns=x, values=z)
+        sns.heatmap(
+            pivot_table,
+            annot=True,
+            fmt=".2e",  # Scientific notation
+            cmap="viridis",
+            ax=ax,
+            cbar_kws={"format": "%.1e"},  # Color bar in scientific notation
+        )
+        ax.set_title(algorithm)
+        ax.set_xlabel(x_label)
+        ax.set_ylabel(y_label)
+
+    # Remove empty subplots
+    for i in range(len(algorithms), rows * cols):
+        row, col = divmod(i, cols)
+        ax = axes[row, col] if rows > 1 else axes[col]
+        fig.delaxes(ax)
+
+    fig.suptitle(title, fontsize=16)
+    plt.savefig(output_file)
+    plt.close()
+
+
+def plot_heatmap_single(data, x, y, z, title, x_label, y_label, output_file):
+    """Generate a single heatmap."""
     plt.figure(figsize=(10, 6))
     pivot_table = data.pivot_table(index=y, columns=x, values=z)
-    sns.heatmap(pivot_table, annot=True, fmt=".2f", cmap="viridis")
+    sns.heatmap(
+        pivot_table,
+        annot=True,
+        fmt=".2e",
+        cmap="viridis",
+        cbar_kws={"format": "%.1e"},
+    )
     plt.title(title)
     plt.xlabel(x_label)
     plt.ylabel(y_label)
@@ -41,9 +99,9 @@ def plot_heatmap(data, x, y, z, title, x_label, y_label, output_file):
     plt.close()
 
 
-# Filter and plot for each experiment
+# Define experiments with parameters
 experiments = {
-    "Error Rate vs Time": {
+    "Error v Time": {
         "type": "line",
         "x": "Error Rate",
         "y": "Avg Time",
@@ -52,7 +110,7 @@ experiments = {
         "x_label": "Error Rate",
         "y_label": "Average Time (s)",
     },
-    "Sequence Length vs Time": {
+    "Sequence Length v Time": {
         "type": "line",
         "x": "Sequence Length",
         "y": "Avg Time",
@@ -61,7 +119,7 @@ experiments = {
         "x_label": "Sequence Length",
         "y_label": "Average Time (s)",
     },
-    "Gap Opening Cost vs Time": {
+    "Gap Opening v Time": {
         "type": "line",
         "x": "Gap Opening Cost",
         "y": "Avg Time",
@@ -70,7 +128,7 @@ experiments = {
         "x_label": "Gap Opening Cost",
         "y_label": "Average Time (s)",
     },
-    "Gap Extension Cost vs Time": {
+    "Gap Extension v Time": {
         "type": "line",
         "x": "Gap Extension Cost",
         "y": "Avg Time",
@@ -79,7 +137,7 @@ experiments = {
         "x_label": "Gap Extension Cost",
         "y_label": "Average Time (s)",
     },
-    "Mismatch Penalty vs Time": {
+    "Mismatch Penalty v Time": {
         "type": "line",
         "x": "Mismatch Penalty",
         "y": "Avg Time",
@@ -89,7 +147,7 @@ experiments = {
         "y_label": "Average Time (s)",
     },
     "Joint Error & Length": {
-        "type": "heatmap",
+        "type": "heatmap_grid",
         "x": "Error Rate",
         "y": "Sequence Length",
         "z": "Avg Time",
@@ -98,7 +156,7 @@ experiments = {
         "y_label": "Sequence Length",
     },
     "Gap Costs Interaction": {
-        "type": "heatmap",
+        "type": "heatmap_grid",
         "x": "Gap Opening Cost",
         "y": "Gap Extension Cost",
         "z": "Avg Time",
@@ -107,7 +165,7 @@ experiments = {
         "y_label": "Gap Extension Cost",
     },
     "Sensitivity Analysis": {
-        "type": "heatmap",
+        "type": "heatmap_grid",
         "x": "Gap Opening Cost",
         "y": "Gap Extension Cost",
         "z": "Avg Time",
@@ -125,7 +183,7 @@ experiments = {
         "y_label": "Average Time (s)",
     },
     "Length & Gap Penalties": {
-        "type": "heatmap",
+        "type": "heatmap_grid",
         "x": "Sequence Length",
         "y": "Gap Opening Cost",
         "z": "Avg Time",
@@ -135,6 +193,7 @@ experiments = {
     },
 }
 
+# Generate plots for each experiment
 for experiment, params in experiments.items():
     filtered_data = data[data["Experiment"] == experiment]
     output_file = os.path.join(output_dir, f"{experiment.replace(' ', '_')}.png")
@@ -149,8 +208,8 @@ for experiment, params in experiments.items():
             y_label=params["y_label"],
             output_file=output_file,
         )
-    elif params["type"] == "heatmap":
-        plot_heatmap(
+    elif params["type"] == "heatmap_grid":
+        plot_heatmap_grid(
             filtered_data,
             x=params["x"],
             y=params["y"],
