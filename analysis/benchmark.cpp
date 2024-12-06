@@ -33,7 +33,7 @@ void benchmark_algorithm(const std::string& algorithm_name, Func align_func,
 
 // Function to invoke VTune profiling
 void run_vtune(const std::string& executable, const std::string& seq1, const std::string& seq2,
-    int x, int o, int e, const std::string& algorithm) {
+    int x, int o, int e, const std::string& algorithm, const std::string& output_file) {
     std::string vtune_dir = "results/" + algorithm;
     try {
         std::filesystem::create_directories(vtune_dir);
@@ -43,9 +43,11 @@ void run_vtune(const std::string& executable, const std::string& seq1, const std
         return;
     }
 
-    std::string vtune_command = "vtune -collect hotspots --summary -- " + executable + " " + seq1 + " " + seq2 + " " +
+    std::string vtune_command = "vtune -collect hotspots --summary -- " +
+        executable + " " + seq1 + " " + seq2 + " " +
         std::to_string(x) + " " + std::to_string(o) + " " +
-        std::to_string(e) + " " + algorithm;
+        std::to_string(e) + " " + algorithm +
+        " >> " + output_file + " 2>&1";
     std::cout << "Running VTune for algorithm: " << algorithm << "\n";
     int result = std::system(vtune_command.c_str());
     if (result != 0) {
@@ -104,6 +106,9 @@ int main(int argc, char* argv[]) {
     }
 
     // If no algorithm is specified, benchmark all and invoke VTune profiling
+    std::ofstream clear_file("output.txt", std::ios::trunc);
+    clear_file.close();
+
     benchmark_algorithm("Naive", wfa::naive, seq1, seq2, x, o, e);
     run_vtune(executable, seq1, seq2, x, o, e, "naive");
 
