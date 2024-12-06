@@ -15,12 +15,12 @@ int32_t* wfa::wavefront_arena_t::alloc(size_t size) {
 
 int32_t wfa::wavefront_entry_t::lookup(int32_t column, int32_t k) {
 	int32_t row = k - low;
-	if (row < 0) {
+	if (row < 0 || row >= number_per_col) {
 		return -1;
 	}
-	if (row > high - low) {
+	/*if (row > high - low) {
 		return -1;
-	}
+	}*/
 
 	return data[column * number_per_col + row];
 }
@@ -43,7 +43,7 @@ wfa::wavefront_entry_t::wavefront_entry_t(wavefront_entry_t&& rhs) {
 	high = rhs.high;
 	number_per_col = rhs.number_per_col;
 	data = rhs.data;
-	valid = rhs.valid;
+	//valid = rhs.valid;
 }
 
 wfa::wavefront_entry_t& wfa::wavefront_entry_t::operator=(wavefront_entry_t&& rhs) {
@@ -51,15 +51,15 @@ wfa::wavefront_entry_t& wfa::wavefront_entry_t::operator=(wavefront_entry_t&& rh
 	high = rhs.high;
 	number_per_col = rhs.number_per_col;
 	data = rhs.data;
-	valid = rhs.valid;
+	//valid = rhs.valid;
 	return *this;
 }
 
-wfa::wavefront_entry_t::wavefront_entry_t(int32_t low, int32_t high, wavefront_arena_t& arena) : low(low), high(high), number_per_col(high - low + 1), data(arena.alloc(3 * number_per_col), 3 * number_per_col), valid(true) {
+wfa::wavefront_entry_t::wavefront_entry_t(int32_t low, int32_t high, wavefront_arena_t& arena) : low(low), high(high), number_per_col(high - low + 1), data(arena.alloc(3 * number_per_col), 3 * number_per_col)/*, valid(true)*/ {
 	
 }
 
-wfa::wavefront_entry_t::wavefront_entry_t() : low(0), high(0), number_per_col(high - low + 1), valid(false) {
+wfa::wavefront_entry_t::wavefront_entry_t() : low(0), high(0), number_per_col(high - low + 1)/*, valid(false)*/ {
 }
 
 int32_t wfa::wavefront_t::lookup(int32_t score, int32_t column, int32_t k) {
@@ -80,11 +80,11 @@ int32_t wfa::wavefront_t::lookup(int32_t score, int32_t column, int32_t k) {
 		return -1;
 	}
 	return (data[score][column][row]);*/
-	auto& el = views[score];
-	if (not el.valid) {
+	int32_t index = mapping[score];
+	if (index == -1) {
 		return -1;
 	}
-	return el.lookup(column, k);
+	return views[index].lookup(column, k);
 }
 
 int32_t wfa::wavefront_t::wave_size_low(int32_t score) {
@@ -104,7 +104,11 @@ int32_t wfa::wavefront_t::wave_size_low(int32_t score) {
 	if (score < 0) {
 		return -1;
 	}
-	return views[score].low;
+	int32_t index = mapping[score];
+	if (index == -1) {
+		return 0;
+	}
+	return views[index].low;
 }
 
 int32_t wfa::wavefront_t::wave_size_high(int32_t score) {
@@ -124,11 +128,15 @@ int32_t wfa::wavefront_t::wave_size_high(int32_t score) {
 	if (score < 0) {
 		return -1;
 	}
-	return views[score].high;
+	int32_t index = mapping[score];
+	if (index == -1) {
+		return 0;
+	}
+	return views[index].high;
 }
 
 bool wfa::wavefront_t::valid_score(int32_t score) {
-	return score >= 0 && views[score].valid;
+	return score >= 0 && mapping[score] != -1;
 }
 
 wfa::wavefront_entry_t& wfa::wavefront_t::insert(int32_t low, int32_t high) {
@@ -138,18 +146,18 @@ wfa::wavefront_entry_t& wfa::wavefront_t::insert(int32_t low, int32_t high) {
 		//fmt::println("realloced");
 		size_t i = 0;
 		for (auto& view : views) {
-			if (view.valid) {
-				size_t view_size = 3 * view.number_per_col;
-				view.data = std::span<int32_t>(arena.data.data() + i, view_size);
-				i += view_size;
-			}
+			size_t view_size = 3 * view.number_per_col;
+			view.data = std::span<int32_t>(arena.data.data() + i, view_size);
+			i += view_size;
 		}
 	}
+	mapping.emplace_back(static_cast<int32_t>(views.size()) - 1);
 	return res;
 }
 
 void wfa::wavefront_t::insert() {
-	views.emplace_back();
+	//views.emplace_back();
+	mapping.emplace_back(-1);
 }
 
 void wfa::wavefront_t::print() {
