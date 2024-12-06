@@ -10,18 +10,29 @@
 #include "include/wfa_simd.hpp"
 #include "bindings/cpp/WFAligner.hpp"
 
-// Align using WFA2-lib
+// Function to align using WFA2-lib
 void wfalib2_align(const std::string& seq1, const std::string& seq2, int x, int o, int e) {
     wfa::WFAlignerGapAffine aligner(x, o, e, wfa::WFAligner::Alignment, wfa::WFAligner::MemoryHigh);
     aligner.alignEnd2End(seq1, seq2);
+    std::cout << "Alignment score (WFA2): " << aligner.getAlignmentScore() << "\n";
 }
 
-// Run VTune profiler
-void run_vtune(const std::string& algorithm, const std::string& command) {
+// Function to run VTune profiler
+void run_vtune(const std::string& algorithm, const std::string& executable,
+    const std::string& seq1, const std::string& seq2, int x, int o, int e) {
     std::string vtune_dir = "results/" + algorithm;
-    std::filesystem::create_directories(vtune_dir); // Ensure directory exists
-    std::string vtune_command = "vtune -collect hotspots -result-dir " + vtune_dir + " -- " + command;
+    try {
+        std::filesystem::create_directories(vtune_dir);
+    }
+    catch (const std::filesystem::filesystem_error& e) {
+        std::cerr << "Failed to create VTune results directory: " << e.what() << "\n";
+        return;
+    }
 
+    std::string vtune_command = "vtune -collect hotspots -result-dir " + vtune_dir +
+        " -- " + executable + " " + seq1 + " " + seq2 + " " +
+        std::to_string(x) + " " + std::to_string(o) + " " +
+        std::to_string(e) + " " + algorithm;
     std::cout << "Running VTune for algorithm: " << algorithm << "\n";
     int result = std::system(vtune_command.c_str());
     if (result != 0) {
@@ -32,24 +43,17 @@ void run_vtune(const std::string& algorithm, const std::string& command) {
     }
 }
 
-// Benchmarking function
+// Function to benchmark a single algorithm
 template <typename Func>
 void benchmark_algorithm(const std::string& algorithm_name, Func align_func,
     const std::string& seq1, const std::string& seq2, int x, int o, int e) {
-    // Measure time
     auto start = std::chrono::high_resolution_clock::now();
     align_func(seq1, seq2, x, o, e);
     auto end = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double> elapsed_time = end - start;
 
-    // Output runtime
+    std::chrono::duration<double> elapsed_time = end - start;
     std::cout << "Algorithm: " << algorithm_name << "\n";
     std::cout << "Execution Time: " << elapsed_time.count() << " seconds\n";
-
-    // VTune profiling
-    std::string command = "./wfa2_comparison " + seq1 + " " + seq2 + " " + std::to_string(x)
-        + " " + std::to_string(o) + " " + std::to_string(e) + " " + algorithm_name;
-    run_vtune(algorithm_name, command);
 }
 
 int main(int argc, char* argv[]) {
@@ -64,30 +68,34 @@ int main(int argc, char* argv[]) {
     int x = std::stoi(argv[3]);
     int o = std::stoi(argv[4]);
     int e = std::stoi(argv[5]);
+    std::string executable = argv[0];
 
-    // Vtune running
-    if (argc == 7) {
-        std::string selected_algorithm = argv[6];
-        if (selected_algorithm == "naive") {
-            wfa::naive(seq1, seq2, x, o, e);
-        }
-        else if (selected_algorithm == "dp_wfa") {
-            wfa::wavefront_dp(seq1, seq2, x, o, e);
-        }
-        else if (selected_algorithm == "trad_wfa") {
-            wfa::wavefront(seq1, seq2, x, o, e);
-        }
-        else if (selected_algorithm == "wfa2_lib") {
-            wfalib2_align(seq1, seq2, x, o, e);
-        }
-
-    }
-    else {
-        // Benchmarks
+    // First, run all algorithms if no algorithm is specified
+    if (argc == 6) {
         benchmark_algorithm("Naive", wfa::naive, seq1, seq2, x, o, e);
         benchmark_algorithm("DP_WFA", wfa::wavefront_dp, seq1, seq2, x, o, e);
         benchmark_algorithm("Traditional_WFA", wfa::wavefront, seq1, seq2, x, o, e);
         benchmark_algorithm("WFA2_Lib", wfalib2_align, seq1, seq2, x, o, e);
+    }
+    // Then, run VTune on a specific algorithm if specified
+    else if (argc == 7) {
+        std::string selected_algorithm = argv[6];
+        if (selected_algorithm == "naive") {
+            run_vtune("Naive", executable, seq1, seq2, x, o, e);
+        }
+        else if (selected_algorithm == "dp_wfa") {
+            run_vtune("DP_WFA", executable, seq1, seq2, x, o, e);
+        }
+        else if (selected_algorithm == "trad_wfa") {
+            run_vtune("Traditional_WFA", executable, seq1, seq2, x, o, e);
+        }
+        else if (selected_algorithm == "wfa2_lib") {
+            run_vtune("WFA2_Lib", executable, seq1, seq2, x, o, e);
+        }
+        else {
+            std::cerr << "Unknown algorithm: " << selected_algorithm << "\n";
+            return 1;
+        }
     }
 
     return 0;
