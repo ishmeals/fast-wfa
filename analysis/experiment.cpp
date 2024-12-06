@@ -114,7 +114,7 @@ void experiment_vary_error_rate(const std::string& executable, const std::string
 // Main function
 int main() {
     const std::string executable = "~/fast-wfa/out/build/linux-debug/bin/wfa2_comparison";
-    const std::string output_csv = "exp_results.csv";
+    const std::string output_csv = "~/fast-wfa/results/exp_results.csv";
 
     // Write CSV header
     std::ofstream csv_file(output_csv);
