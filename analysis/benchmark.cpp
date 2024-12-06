@@ -64,7 +64,6 @@ int main(int argc, char* argv[]) {
     int x = std::stoi(argv[3]);
     int o = std::stoi(argv[4]);
     int e = std::stoi(argv[5]);
-    bool profile
 
     // Vtune running
     if (argc == 7) {
