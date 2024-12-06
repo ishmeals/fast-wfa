@@ -286,8 +286,6 @@ int main() {
 
     // Ensure the results directory exists
     std::filesystem::create_directories(repo_base + "/results");
-    const std::string executable = "~/fast-wfa/out/build/linux-debug/bin/wfa2_comparison";
-    const std::string output_csv = "~/fast-wfa/results/exp_results.csv";
 
     // Write CSV header
     std::ofstream csv_file(output_csv);
