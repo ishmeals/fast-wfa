@@ -122,11 +122,12 @@ target_link_libraries(wfa_tests PRIVATE Catch2::Catch2 ${LIB_WFA})
 
 add_test(NAME NaiveAlignmentTests COMMAND naive_tests)
 
+
 #
-# WFA2-lib 
+# WFA2-lib
 #
 
 if (LINUX)
 	add_executable(wfa2_comparison analysis/benchmark.cpp)
-	target_link_libraries(wfa2_comparison PRIVATE ${LIB_WFA} wfa2::wfa2cpp)
+	target_link_libraries(wfa2_comparison PRIVATE ${LIB_WFA} ${VTUNE_LIBRARY} wfa2::wfa2cpp)
 endif()
