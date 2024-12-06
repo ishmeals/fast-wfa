@@ -14,7 +14,6 @@
 void wfalib2_align(const std::string& seq1, const std::string& seq2, int x, int o, int e) {
     wfa::WFAlignerGapAffine aligner(x, o, e, wfa::WFAligner::Alignment, wfa::WFAligner::MemoryHigh);
     aligner.alignEnd2End(seq1, seq2);
-    std::cout << "Alignment score (WFA2): " << aligner.getAlignmentScore() << "\n";
 }
 
 // Function to benchmark and time an algorithm
@@ -58,6 +57,17 @@ void run_vtune(const std::string& executable, const std::string& seq1, const std
 }
 
 int main(int argc, char* argv[]) {
+
+    std::ofstream output_file("output.txt");
+    if (!output_file.is_open()) {
+        std::cerr << "Failed to open output file.\n";
+        return 1;
+    }
+
+    // Redirect std::cout and std::cerr to the file
+    std::streambuf* cout_buf = std::cout.rdbuf(output_file.rdbuf());
+    std::streambuf* cerr_buf = std::cerr.rdbuf(output_file.rdbuf());
+
     if (argc < 6) {
         std::cerr << "Usage: " << argv[0] << " <seq1> <seq2> <x> <o> <e> [algorithm]\n";
         return 1;
@@ -105,6 +115,10 @@ int main(int argc, char* argv[]) {
 
     benchmark_algorithm("WFA2_Lib", wfalib2_align, seq1, seq2, x, o, e);
     run_vtune(executable, seq1, seq2, x, o, e, "wfa2_lib");
+
+
+    std::cout.rdbuf(cout_buf);
+    std::cerr.rdbuf(cerr_buf);
 
     return 0;
 }
