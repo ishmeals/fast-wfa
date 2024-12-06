@@ -265,10 +265,27 @@ void experiment_length_gap_penalties(const std::string& executable, const std::s
     }
 }
 
+// Helper function to find the repository base
+std::string get_repository_base() {
+    std::filesystem::path current_path = std::filesystem::current_path();
+    while (!current_path.empty() && !std::filesystem::exists(current_path / ".git")) {
+        current_path = current_path.parent_path();
+    }
+    if (current_path.empty()) {
+        throw std::runtime_error("Repository base could not be determined. Make sure you are running within a git repository.");
+    }
+    return current_path.string();
+}
+
 // Main function
 int main() {
-    // Create the output directory
-    std::filesystem::create_directories(std::filesystem::path("~/fast-wfa/results"));
+    // Dynamically determine the repository base and paths
+    std::string repo_base = get_repository_base();
+    std::string executable = repo_base + "/out/build/linux-debug/bin/wfa2_comparison";
+    std::string output_csv = repo_base + "/results/exp_results.csv";
+
+    // Ensure the results directory exists
+    std::filesystem::create_directories(repo_base + "/results");
     const std::string executable = "~/fast-wfa/out/build/linux-debug/bin/wfa2_comparison";
     const std::string output_csv = "~/fast-wfa/results/exp_results.csv";
 
