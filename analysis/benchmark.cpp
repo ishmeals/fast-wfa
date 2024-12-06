@@ -43,8 +43,7 @@ void run_vtune(const std::string& executable, const std::string& seq1, const std
         return;
     }
 
-    std::string vtune_command = "vtune -collect hotspots -result-dir " + vtune_dir +
-        " -- " + executable + " " + seq1 + " " + seq2 + " " +
+    std::string vtune_command = "vtune -collect hotspots --summary -- " + executable + " " + seq1 + " " + seq2 + " " +
         std::to_string(x) + " " + std::to_string(o) + " " +
         std::to_string(e) + " " + algorithm;
     std::cout << "Running VTune for algorithm: " << algorithm << "\n";
