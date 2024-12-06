@@ -59,8 +59,8 @@ void run_vtune(const std::string& executable, const std::string& seq1, const std
 }
 
 int main(int argc, char* argv[]) {
-
-    std::ofstream output_file("output.txt");
+    std::string out = "output.txt"
+    std::ofstream output_file(out);
     if (!output_file.is_open()) {
         std::cerr << "Failed to open output file.\n";
         return 1;
@@ -106,20 +106,20 @@ int main(int argc, char* argv[]) {
     }
 
     // If no algorithm is specified, benchmark all and invoke VTune profiling
-    std::ofstream clear_file("output.txt", std::ios::trunc);
+    std::ofstream clear_file(out, std::ios::trunc);
     clear_file.close();
 
     benchmark_algorithm("Naive", wfa::naive, seq1, seq2, x, o, e);
-    run_vtune(executable, seq1, seq2, x, o, e, "naive");
+    run_vtune(executable, seq1, seq2, x, o, e, "naive", out);
 
     benchmark_algorithm("DP_WFA", wfa::wavefront_dp, seq1, seq2, x, o, e);
-    run_vtune(executable, seq1, seq2, x, o, e, "dp_wfa");
+    run_vtune(executable, seq1, seq2, x, o, e, "dp_wfa", out);
 
     benchmark_algorithm("Traditional_WFA", wfa::wavefront, seq1, seq2, x, o, e);
-    run_vtune(executable, seq1, seq2, x, o, e, "trad_wfa");
+    run_vtune(executable, seq1, seq2, x, o, e, "trad_wfa", out);
 
     benchmark_algorithm("WFA2_Lib", wfalib2_align, seq1, seq2, x, o, e);
-    run_vtune(executable, seq1, seq2, x, o, e, "wfa2_lib");
+    run_vtune(executable, seq1, seq2, x, o, e, "wfa2_lib", out);
 
 
     std::cout.rdbuf(cout_buf);
