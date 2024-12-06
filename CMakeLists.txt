@@ -61,6 +61,7 @@ FetchContent_Declare(
 if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
   set(Kokkos_ARCH_NATIVE ON)
 endif()
+#set(Kokkos_ENABLE_THREADS ON)
 set(ENABLE_TESTING OFF)
 FetchContent_MakeAvailable(fmt kokkos WFA2lib unordered_dense)
 

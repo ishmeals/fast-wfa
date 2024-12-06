@@ -8,7 +8,7 @@
 
 int main() {
 	
-	auto sequences = wfa::modify_sequences(100, 10000, 0.05);
+	auto sequences = wfa::modify_sequences(100, 100000, 0.2);
 
     auto start = std::chrono::system_clock::now();
     for (const auto& pair : sequences) {
@@ -28,11 +28,12 @@ int main() {
     end = std::chrono::system_clock::now();
     fmt::println("Wavefront SIMD: {:%T}", end - start);
 
+    wfa::WFAlignerGapAffine aligner(4, 6, 2, wfa::WFAligner::Alignment, wfa::WFAligner::MemoryHigh);
     start = std::chrono::system_clock::now();
     for (const auto& pair : sequences) {
         const std::string& a = pair.first;
         const std::string& b = pair.second;
-        wfa::WFAlignerGapAffine aligner(4, 6, 2, wfa::WFAligner::Alignment, wfa::WFAligner::MemoryHigh);
+        
         aligner.alignEnd2End(a, b);
     }
     end = std::chrono::system_clock::now();
