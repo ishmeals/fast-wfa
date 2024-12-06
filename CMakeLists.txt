@@ -140,4 +140,7 @@ add_test(NAME NaiveAlignmentTests COMMAND naive_tests)
 if (LINUX)
 	add_executable(wfa2_comparison analysis/benchmark.cpp)
 	target_link_libraries(wfa2_comparison PRIVATE ${LIB_WFA} wfa2::wfa2cpp)
+
+	add_executable(experiments analysis/experiment.cpp)
+	target_link_libraries(experiments PRIVATE ${LIB_WFA} wfa2::wfa2cpp fmt::fmt Kokkos::kokkos unordered_dense::unordered_dense)
 endif()
