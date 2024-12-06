@@ -10,16 +10,16 @@
 
 namespace wfa {
 	//using wavefront_t = std::vector<std::array<std::vector<int32_t>, 3>>;
-	int32_t constexpr match = 2;
 	int32_t constexpr ins = 0;
 	int32_t constexpr del = 1;
+	int32_t constexpr match = 2;
 
 	struct wavefront_t {
 		std::vector<std::array<std::vector<int32_t>, 3>> data;
 		std::unordered_map<int32_t, int32_t> score_to_index;
 		std::vector<std::array<int32_t, 2>> low_hi;
 
-		int32_t lookup(int32_t score, int32_t column, int32_t row);
+		int32_t lookup(int32_t score, int32_t k, int32_t row);
 		int32_t wave_size(int32_t score, bool low);
 
 		void print();
