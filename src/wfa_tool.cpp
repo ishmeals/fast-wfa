@@ -1,5 +1,6 @@
 #include "include/data_gen.hpp"
-#include "include/kokkos_simd.hpp"
+#include "include/wfa_simd.hpp"
+#include "include/wfa.hpp"
 #include "include/naive.hpp"
 #include "fmt/format.h"
 #include "fmt/chrono.h"
@@ -36,10 +37,19 @@ int main() {
     for (const auto& pair : sequences) {
         const std::string& a = pair.first;
         const std::string& b = pair.second;
+        wfa::wavefront_simd(a, b, 4, 6, 2);
+    }
+    end = std::chrono::system_clock::now();
+    fmt::println("Wavefront SIMD: {:%T}", end - start);
+
+    /*start = std::chrono::system_clock::now();
+    for (const auto& pair : sequences) {
+        const std::string& a = pair.first;
+        const std::string& b = pair.second;
         wfa::naive(a, b, 4, 6, 2);
     }
     end = std::chrono::system_clock::now();
-    fmt::println("Naive: {:%T}", end - start);
+    fmt::println("Naive: {:%T}", end - start);*/
 
    /* start = std::chrono::system_clock::now();
     for (const auto& pair : sequences) {

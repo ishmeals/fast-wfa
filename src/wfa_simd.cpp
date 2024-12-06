@@ -1,7 +1,9 @@
-#include "include/kokkos_simd.hpp"
+#include "include/wfa_simd.hpp"
 
 #include "fmt/format.h"
 #include "fmt/ranges.h"
+
+
 
 bool wfa::extend_simd(wavefront_t& wavefront, std::string_view a, std::string_view b, int32_t score) {
 	std::vector<int32_t>& matchfront_back = wavefront.data.back()[2];
@@ -14,26 +16,58 @@ bool wfa::extend_simd(wavefront_t& wavefront, std::string_view a, std::string_vi
 		}
 		int32_t v = starting_index - k;
 		int32_t h = starting_index;
+		
+		int32_t a_size = static_cast<int32_t>(a.size());
+		int32_t b_size = static_cast<int32_t>(b.size());
+
 		bool mismatch = false;
+
+		constexpr int32_t char_per_int = (32 / 8);
+		constexpr int32_t simd_size = static_cast<int32_t>(simd_type::size()) * char_per_int;
+
 		while (not mismatch) {
-			if (v >= static_cast<int32_t>(a.size()) or h >= static_cast<int32_t>(b.size())) {
-				//fmt::println("Extend out of bounds with: {} {}", v, h);
-				break;
-			}
-			const char v_c = a.at(v);
-			const char h_c = b.at(h);
-			if (v_c == h_c) {
-				/*if (v == static_cast<int32_t>(a.size()) - 1 and h == static_cast<int32_t>(b.size()) - 1) {
-					return true;
-				}*/
-				++starting_index;
-				++v;
-				++h;
+			int32_t v_rem = a_size - v - 1;
+			int32_t h_rem = b_size - h - 1;
+			if (v_rem < simd_size or h_rem < simd_size) {
+				if (v >= a_size or h >= b_size) {
+					break;
+				}
+				const int32_t v_c = a[v];
+				const int32_t h_c = b[h];
+				if (v_c == h_c) {
+					++starting_index;
+					++v;
+					++h;
+				}
+				else {
+					mismatch = true;
+				}
 			}
 			else {
-				mismatch = true;
+				simd_type v_vec;
+				v_vec.copy_from(reinterpret_cast<const int32_t*>(a.data()) + v, tag_type());
+				simd_type h_vec;
+				h_vec.copy_from(reinterpret_cast<const int32_t*>(b.data()) + h, tag_type());
+				auto mask = v_vec == h_vec;
+				//bool hit = false;
+				for (int32_t i = 0; i < simd_size / char_per_int; ++i) {
+					if (!mask[i]) {
+						mismatch = true;
+						starting_index += i * char_per_int;
+						for (int32_t i = 0; i < 4; ++i) {
+
+						}
+						break;
+					}
+				}
+				if (!mismatch) {
+					starting_index += simd_size;
+					v += simd_size;
+					h += simd_size;
+				}
 			}
 		}
+		
 		matchfront_back[k - k_low] = starting_index;
 	}
 	return false;
@@ -85,6 +119,16 @@ void wfa::next_simd(wavefront_t& wavefront, int32_t s, int32_t x, int32_t o, int
 }
 
 int32_t wfa::wavefront_simd(std::string_view a, std::string_view b, int32_t x, int32_t o, int32_t e) {
+	/*std::vector<int32_t> a_int;
+	std::vector<int32_t> b_int;
+	for (const char c : a) {
+		a_int.emplace_back(static_cast<int32_t>(c));
+	}
+	for (const char c : b) {
+		b_int.emplace_back(static_cast<int32_t>(c));
+	}*/
+
+
 	wavefront_t wavefront;
 	wavefront.data.emplace_back(std::array<std::vector<int32_t>, 3>{std::vector<int32_t>{-1}, std::vector<int32_t>{-1}, std::vector<int32_t>{0}});
 	
@@ -98,7 +142,7 @@ int32_t wfa::wavefront_simd(std::string_view a, std::string_view b, int32_t x, i
 	int32_t final_offset = static_cast<int32_t>(b.size());
 
 	while (not matched) {
-		/*matched =*/ extend(wavefront, a, b, score);
+		/*matched =*/ extend_simd(wavefront, a, b, score);
 		std::vector<int32_t>& matchfront_back = wavefront.data.back()[2];
 		int32_t k_low = wavefront.wave_size(score, true);
 		if (matchfront_back[final_k - k_low] >= final_offset) {
