@@ -8,13 +8,16 @@
 #include <array>
 #include <unordered_set>
 
-#if _MSC_VER && !__INTEL_COMPILER
+#if _MSC_VER && !__INTEL_COMPILER && ! __clang__
 #pragma warning(push)
 #pragma warning(disable: 4996 4245 4324 4267 4244)
 #include "Kokkos_SIMD.hpp"
 #pragma warning(pop)
 #else
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wlanguage-extension-token"
 #include "Kokkos_SIMD.hpp"
+#pragma clang diagnostic pop
 #endif
 
 namespace wfa {

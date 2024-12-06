@@ -5,6 +5,7 @@
 #include <vector>
 #include <array>
 #include <unordered_set>
+#include "ankerl/unordered_dense.h"
 
 namespace wfa {
 	//using wavefront_t = std::vector<std::array<std::vector<int32_t>, 3>>;
@@ -15,7 +16,7 @@ namespace wfa {
 	struct wavefront_t {
 		std::vector<std::array<std::vector<int32_t>, 3>> data;
 		std::vector<std::array<int32_t, 2>> low_hi;
-		std::unordered_set<int32_t> valid_scores;
+		ankerl::unordered_dense::set<int32_t> valid_scores;
 
 		int32_t lookup(int32_t score, int32_t column, int32_t k);
 		int32_t wave_size(int32_t score, bool low);

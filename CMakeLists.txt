@@ -51,9 +51,18 @@ FetchContent_Declare(
   GIT_TAG        main
 )
 
+FetchContent_Declare(
+	unordered_dense
+	GIT_REPOSITORY https://github.com/martinus/unordered_dense.git
+	GIT_TAG v4.4.0
+	GIT_SHALLOW TRUE
+)
 
+if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+  set(Kokkos_ARCH_NATIVE ON)
+endif()
 set(ENABLE_TESTING OFF)
-FetchContent_MakeAvailable(fmt kokkos WFA2lib)
+FetchContent_MakeAvailable(fmt kokkos WFA2lib unordered_dense)
 
 add_subdirectory(src)
 
@@ -83,6 +92,7 @@ endif()
 target_link_libraries(${LIB_WFA} PUBLIC
 					fmt::fmt
 					Kokkos::kokkos
+					unordered_dense::unordered_dense
 )
 
 set_property(TARGET ${LIB_WFA} PROPERTY CXX_STANDARD 20)
