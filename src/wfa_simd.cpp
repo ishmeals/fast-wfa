@@ -80,6 +80,43 @@ bool wfa::extend_simd(wavefront_t& wavefront, std::string_view a, std::string_vi
 	return false;
 }
 
+//return soe.lookup(match, k + static_cast<int32_t>(i) - 1);
+wfa::simd_type wfa::simd_lookup(wavefront_entry_t& t, int32_t column, int32_t k, int32_t scaling) {
+	constexpr int32_t simd_size = static_cast<int32_t>(simd_type::size());
+	//auto gen = [](size_t i) {return static_cast<int32_t>(i); };
+	constexpr std::array<int32_t, 16> offset_arr = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
+	simd_type offsets;
+	offsets.copy_from(offset_arr.data(), tag_type());
+	simd_type const_k(k + scaling);
+	auto k_range = offsets + const_k;
+	auto row = k_range - t.low;
+	auto bounds_mask = row >= 0 && row < t.number_per_col;
+	//constexpr std::array<int32_t, 16> negative_arr = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
+	//simd_type values_copy(-1);
+	//values.copy_from(negative_arr.data(), tag_type());
+	simd_type values;
+	//for (int32_t i = 0; i < 4; ++i) {
+	//	//if (M_soe_down_vec[i] != M_soe_down_vec2[i]) {
+	//	fmt::println("{}", values[i]);
+	//	//}
+	//}
+	//for (int32_t i = 0; i < 4; ++i) {
+	//	//if (M_soe_down_vec[i] != M_soe_down_vec2[i]) {
+	//	fmt::println("{}", bounds_mask[i] ? "t" : "f");
+	//	//}
+	//}
+	Kokkos::Experimental::where(bounds_mask, values).copy_from(t.data.data() + (column * t.number_per_col + row[0]), tag_type());
+	//for (int32_t i = 0; i < 4; ++i) {
+	//	//if (M_soe_down_vec[i] != M_soe_down_vec2[i]) {
+	//	fmt::println("{}", values[i]);
+	//	//}
+	//}
+	//fmt::println("---");
+	Kokkos::Experimental::where(not bounds_mask, values) = -1;
+	
+	return values;
+}
+
 void wfa::next_simd(wavefront_t& wavefront, int32_t s, int32_t x, int32_t o, int32_t e) {
 	int32_t m_high_sx = wavefront.wave_size_high(s - x);
 	int32_t m_low_sx = wavefront.wave_size_low(s - x);
@@ -120,10 +157,21 @@ void wfa::next_simd(wavefront_t& wavefront, int32_t s, int32_t x, int32_t o, int
 			int32_t soe_index = wavefront.mapping[s - o - e];
 			if (soe_index != -1) {
 				auto& soe = wavefront.views[soe_index];
-				auto M_soe_down = [&soe, k](size_t i) {return soe.lookup(match, k + static_cast<int32_t>(i) - 1); };
-				M_soe_down_vec = simd_type(M_soe_down);
-				auto M_soe_up = [&soe, k](size_t i) {return soe.lookup(match, k + static_cast<int32_t>(i) + 1); };
-				M_soe_up_vec = simd_type(M_soe_up);
+				//auto M_soe_down = [&soe, k](size_t i) {return soe.lookup(match, k + static_cast<int32_t>(i) - 1); };
+				//simd_type M_soe_down_vec2 = simd_type(M_soe_down);
+				M_soe_down_vec = simd_lookup(soe, match, k, -1);
+				//M_soe_down_vec = simd_type(M_soe_down);
+
+				//for (int32_t i = 0; i < 4; ++i) {
+				//	//if (M_soe_down_vec[i] != M_soe_down_vec2[i]) {
+				//		fmt::println("{} {}", M_soe_down_vec[i], M_soe_down_vec2[i]);
+				//	//}
+				//}
+				//fmt::println("---");
+
+				//auto M_soe_up = [&soe, k](size_t i) {return soe.lookup(match, k + static_cast<int32_t>(i) + 1); };
+				//M_soe_up_vec = simd_type(M_soe_up);
+				M_soe_up_vec = simd_lookup(soe, match, k, +1);
 			}
 			else {
 				M_soe_down_vec = simd_type(-1);
@@ -141,10 +189,13 @@ void wfa::next_simd(wavefront_t& wavefront, int32_t s, int32_t x, int32_t o, int
 			int32_t se_index = wavefront.mapping[s - e];
 			if (se_index != -1) {
 				auto& se = wavefront.views[se_index];
-				auto I_se_down = [&se, k](size_t i) {return se.lookup(ins, k + static_cast<int32_t>(i) - 1); };
+
+				/*auto I_se_down = [&se, k](size_t i) {return se.lookup(ins, k + static_cast<int32_t>(i) - 1); };
 				I_se_down_vec = simd_type(I_se_down);
 				auto D_se_up = [&se, k](size_t i) {return se.lookup(del, k + static_cast<int32_t>(i) + 1); };
-				D_se_up_vec = simd_type(D_se_up);
+				D_se_up_vec = simd_type(D_se_up);*/
+				I_se_down_vec = simd_lookup(se, ins, k, -1);
+				D_se_up_vec = simd_lookup(se, del, k, +1);
 			}
 			else {
 				I_se_down_vec = simd_type(-1);
@@ -161,8 +212,9 @@ void wfa::next_simd(wavefront_t& wavefront, int32_t s, int32_t x, int32_t o, int
 			int32_t sx_index = wavefront.mapping[s - x];
 			if (sx_index != -1) {
 				auto& sx = wavefront.views[sx_index];
-				auto M_sx = [&sx, k](size_t i) {return sx.lookup(match, k + static_cast<int32_t>(i)); };
-				M_sx_vec = simd_type(M_sx);
+				//auto M_sx = [&sx, k](size_t i) {return sx.lookup(match, k + static_cast<int32_t>(i)); };
+				//M_sx_vec = simd_type(M_sx);
+				M_sx_vec = simd_lookup(sx, match, k, 0);
 			}
 			else {
 				M_sx_vec = simd_type(-1);

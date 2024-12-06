@@ -63,13 +63,13 @@ int main() {
     end = std::chrono::system_clock::now();
     fmt::println("Wavefront DP: {:%T}", end - start);*/
 
-
-    /*std::string a = "TCATGCAGGCCCGGAGGAAAATTATCCCGGGACGATCTCTAGTTATTGCAGTGGCCAGCGTTGGGGACGGTCGTTTTCGCTCCCAGAACGCCAACCGTGT";
+    /*wfa::wavefront_arena_t arena1;
+    std::string a = "TCATGCAGGCCCGGAGGAAAATTATCCCGGGACGATCTCTAGTTATTGCAGTGGCCAGCGTTGGGGACGGTCGTTTTCGCTCCCAGAACGCCAACCGTGT";
     std::string b = "TCATGCAGGCCCGAAGGAAAATTAGTCCGGGATGATTTCTTGCTATTTCAGTGGCCAGCATTGGGGCATATCGCTTCAGTTCCCATAAGGTCGACCGTGA";
 
-    auto score = wfa::wavefront_simd(a, b, 4, 6, 2);
+    auto score = wfa::wavefront_simd(a, b, 4, 6, 2, arena1);
     auto score2 = wfa::naive(a, b, 4, 6, 2);
-    auto score3 = wfa::wavefront(a, b, 4, 6, 2);
+    auto score3 = wfa::wavefront(a, b, 4, 6, 2, arena1);
 
     fmt::println("{} {} {}", score, score2, score3);*/
    /* wfa::wavefront_arena_t arena1;
