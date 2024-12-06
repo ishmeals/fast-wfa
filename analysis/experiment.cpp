@@ -114,7 +114,7 @@ void experiment_vary_error_rate(const std::string& executable, const std::string
 
 // Main function
 int main() {
-    std::filesystem::create_directories(std::filesystem::path("~/fast-wfa/results"))
+    std::filesystem::create_directories(std::filesystem::path("~/fast-wfa/results"));
     const std::string executable = "~/fast-wfa/out/build/linux-debug/bin/wfa2_comparison";
     const std::string output_csv = "~/fast-wfa/results/exp_results.csv";
 
