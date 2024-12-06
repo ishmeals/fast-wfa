@@ -95,6 +95,8 @@ void experiment_vary_error_rate(const std::string& executable, const std::string
                 mismatch_penalty, gap_opening_cost, gap_extension_cost, algorithm);
 
             results.push_back({
+                algorithm,
+                "Error v Time",
                 std::to_string(num_samples),
                 std::to_string(sequence_length),
                 std::to_string(error_rate),
@@ -121,7 +123,7 @@ int main() {
         return 1;
     }
 
-    csv_file << "Sample Count,Sequence Length,Error Rate,Mismatch Penalty,Gap Opening Cost,Gap Extension Cost,Avg Time\n";
+    csv_file << "Algorithm,Experiment,Sample Count,Sequence Length,Error Rate,Mismatch Penalty,Gap Opening Cost,Gap Extension Cost,Avg Time\n";
     csv_file.close();
 
     // Run experiment
