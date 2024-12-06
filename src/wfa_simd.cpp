@@ -50,7 +50,7 @@ bool wfa::extend_simd(wavefront_t& wavefront, std::string_view a, std::string_vi
 				simd_type h_vec;
 				h_vec.copy_from(reinterpret_cast<const int32_t*>(b.data() + h), tag_type());
 				auto mask = v_vec == h_vec;
-				if (!Kokkos::Experimental::all_of(mask)) {
+				//if (!Kokkos::Experimental::all_of(mask)) {
 					for (int32_t i = 0; i < simd_size / char_per_int; ++i) {
 						if (!mask[i]) {
 							mismatch = true;
@@ -65,8 +65,9 @@ bool wfa::extend_simd(wavefront_t& wavefront, std::string_view a, std::string_vi
 							break;
 						}
 					}
-				}
-				else {
+				//}
+				//else {
+				if (!mismatch) {
 					starting_index += simd_size;
 					v += simd_size;
 					h += simd_size;
@@ -101,7 +102,7 @@ void wfa::next_simd(wavefront_t& wavefront, int32_t s, int32_t x, int32_t o, int
 	low_hi_cur[1] = high;*/
 	auto& wave_cur = wavefront.data.emplace_back(low, high);
 
-	wavefront.valid_scores.emplace(s);
+	//wavefront.valid_scores.emplace(s);
 	/*auto& wave_cur = wavefront.data.emplace_back(std::array<std::vector<int32_t>, 3>{
 		std::vector<int32_t>(high - low + 1),
 		std::vector<int32_t>(high - low + 1),
@@ -112,22 +113,84 @@ void wfa::next_simd(wavefront_t& wavefront, int32_t s, int32_t x, int32_t o, int
 
 	int32_t k = low;
 	while (high - k + 1 > simd_size) {
-		auto M_soe_down = [&wavefront, s, o, e, k] (size_t i) {return wavefront.lookup(s - o - e, match, k + static_cast<int32_t>(i) - 1);};
+		simd_type M_soe_down_vec;
+		simd_type M_soe_up_vec;
+		if (s - o - e >= 0) {
+			auto& soe = wavefront.data[s - o - e];
+			if (soe.valid) {
+				auto M_soe_down = [&soe, k](size_t i) {return soe.lookup(match, k + static_cast<int32_t>(i) - 1); };
+				M_soe_down_vec = simd_type(M_soe_down);
+				auto M_soe_up = [&soe, k](size_t i) {return soe.lookup(match, k + static_cast<int32_t>(i) + 1); };
+				M_soe_up_vec = simd_type(M_soe_up);
+			}
+			else {
+				M_soe_down_vec = simd_type(-1);
+				M_soe_up_vec = simd_type(-1);
+			}
+		}
+		else {
+			M_soe_down_vec = simd_type(-1);
+			M_soe_up_vec = simd_type(-1);
+		}
+
+		simd_type I_se_down_vec;
+		simd_type D_se_up_vec;
+		if (s - e >= 0) {
+			auto& se = wavefront.data[s-e];
+			if (se.valid) {
+				auto I_se_down = [&se, k](size_t i) {return se.lookup(ins, k + static_cast<int32_t>(i) - 1); };
+				I_se_down_vec = simd_type(I_se_down);
+				auto D_se_up = [&se, k](size_t i) {return se.lookup(del, k + static_cast<int32_t>(i) + 1); };
+				D_se_up_vec = simd_type(D_se_up);
+			}
+			else {
+				I_se_down_vec = simd_type(-1);
+				D_se_up_vec = simd_type(-1);
+			}
+		}
+		else {
+			I_se_down_vec = simd_type(-1);
+			D_se_up_vec = simd_type(-1);
+		}
+
+		simd_type M_sx_vec;
+		if (s - x >= 0) {
+			auto& sx = wavefront.data[s-x];
+			if (sx.valid) {
+				auto M_sx = [&sx, k](size_t i) {return sx.lookup(match, k + static_cast<int32_t>(i)); };
+				M_sx_vec = simd_type(M_sx);
+			}
+			else {
+				M_sx_vec = simd_type(-1);
+			}
+		}
+		else {
+			M_sx_vec = simd_type(-1);
+		}
+
+		/*auto M_soe_down = [&wavefront, s, o, e, k] (size_t i) {return wavefront.lookup(s - o - e, match, k + static_cast<int32_t>(i) - 1);};
 		auto I_se_down = [&wavefront, s, e, k](size_t i) {return wavefront.lookup(s - e, ins, k + static_cast<int32_t>(i) - 1);};
-		simd_type M_soe_down_vec(M_soe_down);
-		simd_type I_se_down_vec(I_se_down);
-		simd_type I = Kokkos::max(M_soe_down_vec, I_se_down_vec);
-		Kokkos::Experimental::where(I != -1, I) = I + 1;
 
 		auto M_soe_up = [&wavefront, s, o, e, k](size_t i) {return wavefront.lookup(s - o - e, match, k + static_cast<int32_t>(i) + 1); };
 		auto D_se_up = [&wavefront, s, e, k](size_t i) {return wavefront.lookup(s - e, del, k + static_cast<int32_t>(i) + 1); };
 
+		auto M_sx = [&wavefront, s, x, k](size_t i) {return wavefront.lookup(s - x, match, k + static_cast<int32_t>(i)); };
+
+		simd_type M_soe_down_vec(M_soe_down);
+		simd_type I_se_down_vec(I_se_down);
+
 		simd_type M_soe_up_vec(M_soe_up);
 		simd_type D_se_up_vec(D_se_up);
+
+		simd_type M_sx_vec(M_sx);*/
+
+		simd_type I = Kokkos::max(M_soe_down_vec, I_se_down_vec);
+		Kokkos::Experimental::where(I != -1, I) = I + 1;
+
 		simd_type D = Kokkos::max(M_soe_up_vec, D_se_up_vec);
 
-		auto M_sx = [&wavefront, s, x, k] (size_t i) {return wavefront.lookup(s - x, match, k + static_cast<int32_t>(i));};
-		simd_type M_sx_vec(M_sx);
+		//auto M_sx = [&wavefront, s, x, k] (size_t i) {return wavefront.lookup(s - x, match, k + static_cast<int32_t>(i));};
+		
 		Kokkos::Experimental::where(M_sx_vec != -1, M_sx_vec) = M_sx_vec + 1;
 		simd_type M = Kokkos::max(I, D);
 		M = Kokkos::max(M, M_sx_vec);
@@ -188,7 +251,7 @@ int32_t wfa::wavefront_simd(std::string_view a, std::string_view b, int32_t x, i
 	first.data = { -1, -1, 0 };
 	
 	//wavefront.low_hi.emplace_back(std::array{0,0});
-	wavefront.valid_scores.emplace(0);
+	//wavefront.valid_scores.emplace(0);
 	bool matched = false;
 
 	int32_t score = 0;
@@ -211,12 +274,15 @@ int32_t wfa::wavefront_simd(std::string_view a, std::string_view b, int32_t x, i
 		else {
 			score = score + 1;
 			while (not (
-				wavefront.valid_scores.contains(score - x)
+				/*wavefront.valid_scores.contains(score - x)
 				or wavefront.valid_scores.contains(score - e - o)
-				or (wavefront.valid_scores.contains(score - e) and (score - e >= o))
+				or (wavefront.valid_scores.contains(score - e) and (score - e >= o))*/
+				wavefront.valid_score(score - x)
+				or wavefront.valid_score(score - e - o)
+				or (wavefront.valid_score(score - e) and (score - e >= o))
 			)) {
 				//wavefront.data.emplace_back(std::array<std::vector<int32_t>, 3>{std::vector<int32_t>{-1}, std::vector<int32_t>{-1}, std::vector<int32_t>{-1}});
-				wavefront.data.emplace_back(0, 0);
+				wavefront.data.emplace_back();
 				//wavefront.low_hi.emplace_back(std::array{ 0,0 });
 				++score;
 			}

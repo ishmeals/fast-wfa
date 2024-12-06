@@ -7,7 +7,7 @@
 #include <chrono>
 
 int main() {
-    auto sequences = wfa::modify_sequences(100, 10000, 0.05);
+    auto sequences = wfa::modify_sequences(100, 100000, 0.05);
     /*int32_t i = 0;
     for (const auto& pair : sequences) {
         const std::string& a = pair.first;
@@ -19,7 +19,7 @@ int main() {
             fmt::println("---Error---\nScore: {} {} {}\nA: {}\nB: {}", score, score2, score3, a, b);
         }
         else {
-            fmt::println("Sucess: {}", i);
+            fmt::println("Success: {}", i);
         }
         ++i;
     }*/

@@ -29,8 +29,11 @@ int32_t* wfa::wavefront_entry_t::start_ptr(int32_t column) {
 	return data.data() + column * number_per_col;
 }
 
-wfa::wavefront_entry_t::wavefront_entry_t(int32_t low, int32_t high) : low(low), high(high), number_per_col(high - low + 1) {
-	data.resize(3 * number_per_col);
+wfa::wavefront_entry_t::wavefront_entry_t(int32_t low, int32_t high) : low(low), high(high), number_per_col(high - low + 1), data(3 * number_per_col), valid(true) {
+	
+}
+
+wfa::wavefront_entry_t::wavefront_entry_t() : low(0), high(0), number_per_col(high - low + 1), valid(false) {
 }
 
 int32_t wfa::wavefront_t::lookup(int32_t score, int32_t column, int32_t k) {
@@ -51,7 +54,11 @@ int32_t wfa::wavefront_t::lookup(int32_t score, int32_t column, int32_t k) {
 		return -1;
 	}
 	return (data[score][column][row]);*/
-	return data[score].lookup(column, k);
+	auto& el = data[score];
+	if (not el.valid) {
+		return -1;
+	}
+	return el.lookup(column, k);
 }
 
 int32_t wfa::wavefront_t::wave_size_low(int32_t score) {
@@ -94,8 +101,9 @@ int32_t wfa::wavefront_t::wave_size_high(int32_t score) {
 	return data[score].high;
 }
 
-
-
+bool wfa::wavefront_t::valid_score(int32_t score) {
+	return score >= 0 && data[score].valid;
+}
 
 void wfa::wavefront_t::print() {
 	/*for (const auto& pair : score_to_index) {
@@ -188,7 +196,7 @@ void wfa::next(wavefront_t& wavefront, int32_t s, int32_t x, int32_t o, int32_t 
 
 	auto& wave_cur = wavefront.data.emplace_back(low, high);
 
-	wavefront.valid_scores.emplace(s);
+	//wavefront.valid_scores.emplace(s);
 	/*auto& wave_cur = wavefront.data.emplace_back(std::array<std::vector<int32_t>, 3>{
 		std::vector<int32_t>(high - low + 1),
 			std::vector<int32_t>(high - low + 1),
@@ -218,7 +226,7 @@ int32_t wfa::wavefront(std::string_view a, std::string_view b, int32_t x, int32_
 	first.data = {-1, -1, 0};
 
 	//wavefront.low_hi.emplace_back(std::array{ 0,0 });
-	wavefront.valid_scores.emplace(0);
+	//wavefront.valid_scores.emplace(0);
 	bool matched = false;
 
 	int32_t score = 0;
@@ -236,12 +244,15 @@ int32_t wfa::wavefront(std::string_view a, std::string_view b, int32_t x, int32_
 		else {
 			score = score + 1;
 			while (not (
-				wavefront.valid_scores.contains(score - x)
+				/*wavefront.valid_scores.contains(score - x)
 				or wavefront.valid_scores.contains(score - e - o)
-				or (wavefront.valid_scores.contains(score - e) and (score - e >= o))
+				or (wavefront.valid_scores.contains(score - e) and (score - e >= o))*/
+				wavefront.valid_score(score - x)
+				or wavefront.valid_score(score - e - o)
+				or (wavefront.valid_score(score - e) and (score - e >= o))
 				)) {
 				//wavefront.data.emplace_back(std::array<std::vector<int32_t>, 3>{std::vector<int32_t>{-1}, std::vector<int32_t>{-1}, std::vector<int32_t>{-1}});
-				wavefront.data.emplace_back(0,0);
+				wavefront.data.emplace_back();
 				//wavefront.low_hi.emplace_back(std::array{ 0,0 });
 				++score;
 			}
