@@ -4,6 +4,7 @@
 #include <chrono>
 #include <cstdlib>
 #include <filesystem>
+#include <fstream>
 
 #include "include/naive.hpp"
 #include "include/wfa.hpp"
