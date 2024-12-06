@@ -78,42 +78,196 @@ void write_to_csv(const std::string& filename, const std::vector<std::vector<std
     csv_file.close();
 }
 
-// Experiment to vary error rate and record times
 void experiment_vary_error_rate(const std::string& executable, const std::string& output_csv) {
     int mismatch_penalty = 4;
     int gap_opening_cost = 6;
     int gap_extension_cost = 2;
     int num_samples = 1000;
     int sequence_length = 100;
-
     std::vector<double> error_rates = { 0.01, 0.05, 0.1, 0.2, 0.3 };
-    std::vector<std::string> algorithms = { "Wavefront", "Wavefront SIMD", "WFA2-lib" };
-    std::vector<std::vector<std::string>> results;
 
+    std::vector<std::string> algorithms = { "Wavefront", "Wavefront SIMD", "WFA2-lib" };
     for (double error_rate : error_rates) {
         for (const auto& algorithm : algorithms) {
-            double avg_time = run_alignment(executable, error_rate, sequence_length, num_samples,
-                mismatch_penalty, gap_opening_cost, gap_extension_cost, algorithm);
-
-            results.push_back({
-                algorithm,
-                "Error v Time",
-                std::to_string(num_samples),
-                std::to_string(sequence_length),
-                std::to_string(error_rate),
-                std::to_string(mismatch_penalty),
-                std::to_string(gap_opening_cost),
-                std::to_string(gap_extension_cost),
-                std::to_string(avg_time)
-                });
+            double avg_time = run_alignment(executable, error_rate, sequence_length, num_samples, mismatch_penalty, gap_opening_cost, gap_extension_cost, algorithm);
+            write_to_csv(output_csv, { {algorithm, "Error v Time", std::to_string(num_samples), std::to_string(sequence_length), std::to_string(error_rate), std::to_string(mismatch_penalty), std::to_string(gap_opening_cost), std::to_string(gap_extension_cost), std::to_string(avg_time)} });
         }
     }
+}
 
-    write_to_csv(output_csv, results);
+void experiment_vary_sequence_length(const std::string& executable, const std::string& output_csv) {
+    double error_rate = 0.1;
+    int mismatch_penalty = 4;
+    int gap_opening_cost = 6;
+    int gap_extension_cost = 2;
+    int num_samples = 1000;
+    std::vector<int> sequence_lengths = { 50, 100, 200, 500, 1000 };
+
+    std::vector<std::string> algorithms = { "Wavefront", "Wavefront SIMD", "WFA2-lib" };
+    for (int sequence_length : sequence_lengths) {
+        for (const auto& algorithm : algorithms) {
+            double avg_time = run_alignment(executable, error_rate, sequence_length, num_samples, mismatch_penalty, gap_opening_cost, gap_extension_cost, algorithm);
+            write_to_csv(output_csv, { {algorithm, "Sequence Length v Time", std::to_string(num_samples), std::to_string(sequence_length), std::to_string(error_rate), std::to_string(mismatch_penalty), std::to_string(gap_opening_cost), std::to_string(gap_extension_cost), std::to_string(avg_time)} });
+        }
+    }
+}
+
+void experiment_vary_gap_opening(const std::string& executable, const std::string& output_csv) {
+    double error_rate = 0.1;
+    int sequence_length = 100;
+    int mismatch_penalty = 4;
+    int gap_extension_cost = 2;
+    int num_samples = 1000;
+    std::vector<int> gap_opening_costs = { 1, 3, 6, 10, 15 };
+
+    std::vector<std::string> algorithms = { "Wavefront", "Wavefront SIMD", "WFA2-lib" };
+    for (int gap_opening_cost : gap_opening_costs) {
+        for (const auto& algorithm : algorithms) {
+            double avg_time = run_alignment(executable, error_rate, sequence_length, num_samples, mismatch_penalty, gap_opening_cost, gap_extension_cost, algorithm);
+            write_to_csv(output_csv, { {algorithm, "Gap Opening v Time", std::to_string(num_samples), std::to_string(sequence_length), std::to_string(error_rate), std::to_string(mismatch_penalty), std::to_string(gap_opening_cost), std::to_string(gap_extension_cost), std::to_string(avg_time)} });
+        }
+    }
+}
+
+void experiment_vary_gap_extension(const std::string& executable, const std::string& output_csv) {
+    double error_rate = 0.1;
+    int sequence_length = 100;
+    int mismatch_penalty = 4;
+    int gap_opening_cost = 6;
+    int num_samples = 1000;
+    std::vector<int> gap_extension_costs = { 1, 2, 5, 10, 20 };
+
+    std::vector<std::string> algorithms = { "Wavefront", "Wavefront SIMD", "WFA2-lib" };
+    for (int gap_extension_cost : gap_extension_costs) {
+        for (const auto& algorithm : algorithms) {
+            double avg_time = run_alignment(executable, error_rate, sequence_length, num_samples, mismatch_penalty, gap_opening_cost, gap_extension_cost, algorithm);
+            write_to_csv(output_csv, { {algorithm, "Gap Extension v Time", std::to_string(num_samples), std::to_string(sequence_length), std::to_string(error_rate), std::to_string(mismatch_penalty), std::to_string(gap_opening_cost), std::to_string(gap_extension_cost), std::to_string(avg_time)} });
+        }
+    }
+}
+
+void experiment_vary_mismatch_penalty(const std::string& executable, const std::string& output_csv) {
+    double error_rate = 0.1;
+    int sequence_length = 100;
+    int gap_opening_cost = 6;
+    int gap_extension_cost = 2;
+    int num_samples = 1000;
+    std::vector<int> mismatch_penalties = { 1, 2, 4, 8, 10 };
+
+    std::vector<std::string> algorithms = { "Wavefront", "Wavefront SIMD", "WFA2-lib" };
+    for (int mismatch_penalty : mismatch_penalties) {
+        for (const auto& algorithm : algorithms) {
+            double avg_time = run_alignment(executable, error_rate, sequence_length, num_samples, mismatch_penalty, gap_opening_cost, gap_extension_cost, algorithm);
+            write_to_csv(output_csv, { {algorithm, "Mismatch Penalty v Time", std::to_string(num_samples), std::to_string(sequence_length), std::to_string(error_rate), std::to_string(mismatch_penalty), std::to_string(gap_opening_cost), std::to_string(gap_extension_cost), std::to_string(avg_time)} });
+        }
+    }
+}
+
+// Experiment: Joint Impact of Error Rate and Sequence Length
+void experiment_joint_error_length(const std::string& executable, const std::string& output_csv) {
+    int mismatch_penalty = 4;
+    int gap_opening_cost = 6;
+    int gap_extension_cost = 2;
+    int num_samples = 1000;
+    std::vector<int> sequence_lengths = { 50, 100, 200, 500 };
+    std::vector<double> error_rates = { 0.01, 0.05, 0.1, 0.2 };
+
+    std::vector<std::string> algorithms = { "Wavefront", "Wavefront SIMD", "WFA2-lib" };
+    for (int sequence_length : sequence_lengths) {
+        for (double error_rate : error_rates) {
+            for (const auto& algorithm : algorithms) {
+                double avg_time = run_alignment(executable, error_rate, sequence_length, num_samples, mismatch_penalty, gap_opening_cost, gap_extension_cost, algorithm);
+                write_to_csv(output_csv, { {algorithm, "Joint Error & Length", std::to_string(num_samples), std::to_string(sequence_length), std::to_string(error_rate), std::to_string(mismatch_penalty), std::to_string(gap_opening_cost), std::to_string(gap_extension_cost), std::to_string(avg_time)} });
+            }
+        }
+    }
+}
+
+// Experiment: Interaction of Gap Costs
+void experiment_interaction_gap_costs(const std::string& executable, const std::string& output_csv) {
+    double error_rate = 0.1;
+    int sequence_length = 100;
+    int mismatch_penalty = 4;
+    int num_samples = 1000;
+    std::vector<int> gap_opening_costs = { 1, 3, 6, 10 };
+    std::vector<int> gap_extension_costs = { 1, 2, 5, 10 };
+
+    std::vector<std::string> algorithms = { "Wavefront", "Wavefront SIMD", "WFA2-lib" };
+    for (int gap_opening_cost : gap_opening_costs) {
+        for (int gap_extension_cost : gap_extension_costs) {
+            for (const auto& algorithm : algorithms) {
+                double avg_time = run_alignment(executable, error_rate, sequence_length, num_samples, mismatch_penalty, gap_opening_cost, gap_extension_cost, algorithm);
+                write_to_csv(output_csv, { {algorithm, "Gap Costs Interaction", std::to_string(num_samples), std::to_string(sequence_length), std::to_string(error_rate), std::to_string(mismatch_penalty), std::to_string(gap_opening_cost), std::to_string(gap_extension_cost), std::to_string(avg_time)} });
+            }
+        }
+    }
+}
+
+// Experiment: Algorithm Sensitivity Analysis
+void experiment_sensitivity_analysis(const std::string& executable, const std::string& output_csv) {
+    double error_rate = 0.1;
+    int sequence_length = 100;
+    int num_samples = 1000;
+    std::vector<int> mismatch_penalties = { 2, 4, 8 };
+    std::vector<int> gap_opening_costs = { 3, 6, 10 };
+    std::vector<int> gap_extension_costs = { 1, 5, 10 };
+
+    std::vector<std::string> algorithms = { "Wavefront", "Wavefront SIMD", "WFA2-lib" };
+    for (int mismatch_penalty : mismatch_penalties) {
+        for (int gap_opening_cost : gap_opening_costs) {
+            for (int gap_extension_cost : gap_extension_costs) {
+                for (const auto& algorithm : algorithms) {
+                    double avg_time = run_alignment(executable, error_rate, sequence_length, num_samples, mismatch_penalty, gap_opening_cost, gap_extension_cost, algorithm);
+                    write_to_csv(output_csv, { {algorithm, "Sensitivity Analysis", std::to_string(num_samples), std::to_string(sequence_length), std::to_string(error_rate), std::to_string(mismatch_penalty), std::to_string(gap_opening_cost), std::to_string(gap_extension_cost), std::to_string(avg_time)} });
+                }
+            }
+        }
+    }
+}
+
+// Experiment: Varying Error Rate with Increased Complexity
+void experiment_error_rate_complexity(const std::string& executable, const std::string& output_csv) {
+    int sequence_length = 100;
+    int mismatch_penalty = 4;
+    int gap_extension_cost = 2;
+    int num_samples = 1000;
+    std::vector<double> error_rates = { 0.01, 0.05, 0.1, 0.2, 0.3 };
+    std::vector<int> gap_opening_costs = { 6, 10 };
+
+    std::vector<std::string> algorithms = { "Wavefront", "Wavefront SIMD", "WFA2-lib" };
+    for (double error_rate : error_rates) {
+        for (int gap_opening_cost : gap_opening_costs) {
+            for (const auto& algorithm : algorithms) {
+                double avg_time = run_alignment(executable, error_rate, sequence_length, num_samples, mismatch_penalty, gap_opening_cost, gap_extension_cost, algorithm);
+                write_to_csv(output_csv, { {algorithm, "Error Rate & Complexity", std::to_string(num_samples), std::to_string(sequence_length), std::to_string(error_rate), std::to_string(mismatch_penalty), std::to_string(gap_opening_cost), std::to_string(gap_extension_cost), std::to_string(avg_time)} });
+            }
+        }
+    }
+}
+
+// Experiment: Combination of Sequence Length and Gap Penalties
+void experiment_length_gap_penalties(const std::string& executable, const std::string& output_csv) {
+    double error_rate = 0.05;
+    int mismatch_penalty = 4;
+    int gap_extension_cost = 2;
+    int num_samples = 1000;
+    std::vector<int> sequence_lengths = { 50, 100, 200, 500 };
+    std::vector<int> gap_opening_costs = { 3, 6, 10 };
+
+    std::vector<std::string> algorithms = { "Wavefront", "Wavefront SIMD", "WFA2-lib" };
+    for (int sequence_length : sequence_lengths) {
+        for (int gap_opening_cost : gap_opening_costs) {
+            for (const auto& algorithm : algorithms) {
+                double avg_time = run_alignment(executable, error_rate, sequence_length, num_samples, mismatch_penalty, gap_opening_cost, gap_extension_cost, algorithm);
+                write_to_csv(output_csv, { {algorithm, "Length & Gap Penalties", std::to_string(num_samples), std::to_string(sequence_length), std::to_string(error_rate), std::to_string(mismatch_penalty), std::to_string(gap_opening_cost), std::to_string(gap_extension_cost), std::to_string(avg_time)} });
+            }
+        }
+    }
 }
 
 // Main function
 int main() {
+    // Create the output directory
     std::filesystem::create_directories(std::filesystem::path("~/fast-wfa/results"));
     const std::string executable = "~/fast-wfa/out/build/linux-debug/bin/wfa2_comparison";
     const std::string output_csv = "~/fast-wfa/results/exp_results.csv";
@@ -128,10 +282,45 @@ int main() {
     csv_file << "Algorithm,Experiment,Sample Count,Sequence Length,Error Rate,Mismatch Penalty,Gap Opening Cost,Gap Extension Cost,Avg Time\n";
     csv_file.close();
 
-    // Run experiment
-    experiment_vary_error_rate(executable, output_csv);
+    try {
+        // Run all experiments
+        std::cout << "Running Experiment: Error Rate vs Time...\n";
+        experiment_vary_error_rate(executable, output_csv);
 
-    std::cout << "Experiment completed. Results written to: " << output_csv << "\n";
+        std::cout << "Running Experiment: Sequence Length vs Time...\n";
+        experiment_vary_sequence_length(executable, output_csv);
+
+        std::cout << "Running Experiment: Gap Opening Cost vs Time...\n";
+        experiment_vary_gap_opening(executable, output_csv);
+
+        std::cout << "Running Experiment: Gap Extension Cost vs Time...\n";
+        experiment_vary_gap_extension(executable, output_csv);
+
+        std::cout << "Running Experiment: Mismatch Penalty vs Time...\n";
+        experiment_vary_mismatch_penalty(executable, output_csv);
+
+        std::cout << "Running Experiment: Joint Impact of Error Rate and Sequence Length...\n";
+        experiment_joint_error_length(executable, output_csv);
+
+        std::cout << "Running Experiment: Interaction of Gap Costs...\n";
+        experiment_interaction_gap_costs(executable, output_csv);
+
+        std::cout << "Running Experiment: Sensitivity Analysis...\n";
+        experiment_sensitivity_analysis(executable, output_csv);
+
+        std::cout << "Running Experiment: Varying Error Rate with Increased Complexity...\n";
+        experiment_error_rate_complexity(executable, output_csv);
+
+        std::cout << "Running Experiment: Combination of Sequence Length and Gap Penalties...\n";
+        experiment_length_gap_penalties(executable, output_csv);
+
+        std::cout << "All experiments completed. Results written to: " << output_csv << "\n";
+    }
+    catch (const std::exception& e) {
+        std::cerr << "An error occurred during execution: " << e.what() << "\n";
+        return 1;
+    }
 
     return 0;
 }
+
