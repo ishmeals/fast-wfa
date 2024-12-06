@@ -109,8 +109,8 @@ void experiment_vary_length(const std::string& executable, const std::string& ou
 
 // Main function
 int main() {
-    const std::string executable = "out/build/linux-debug/bin/wfa2_comparison";
-    const std::string output_csv = "results/exp_results.csv";
+    const std::string executable = "~/fast-wfa/out/build/linux-debug/bin/wfa2_comparison";
+    const std::string output_csv = "~/fast-wfa/results/exp_results.csv";
 
     // Write CSV header
     std::ofstream csv_file(output_csv);
