@@ -68,6 +68,22 @@
       }
     },
     {
+      "name": "x64-release-clang-instr",
+      "inherits": "windows-clang-base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_CXX_FLAGS": "-fprofile-generate"
+      }
+    },
+    {
+      "name": "x64-release-clang-pgo",
+      "inherits": "windows-clang-base",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_CXX_FLAGS": "-fprofile-instr-use=\"${sourceDir}/out/build/x64-release-clang-instr/bin/code.profdata\""
+      }
+    },
+    {
       "name": "x64-linux",
       "hidden": true,
       "generator": "Ninja",

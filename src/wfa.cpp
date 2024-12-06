@@ -63,8 +63,8 @@ bool wfa::extend(wavefront_t& wavefront, std::string_view a, std::string_view b,
 				//fmt::println("Extend out of bounds with: {} {}", v, h);
 				break;
 			}
-			const char v_c = a.at(v);
-			const char h_c = b.at(h);
+			const char v_c = a[v];
+			const char h_c = b[h];
 			if (v_c == h_c) {
 				/*if (v == static_cast<int32_t>(a.size()) - 1 and h == static_cast<int32_t>(b.size()) - 1) {
 					return true;
