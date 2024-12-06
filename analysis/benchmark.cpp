@@ -60,7 +60,14 @@ void run_vtune(const std::string& executable, const std::string& seq1, const std
 
 int main(int argc, char* argv[]) {
     std::string out = "output.txt";
-    std::ofstream output_file(out);
+
+    // Clear the output file only if it's a new 6-parameter run
+    if (argc == 6) {
+        std::ofstream clear_file(out, std::ios::trunc);
+        clear_file.close();
+    }
+
+    std::ofstream output_file(out, std::ios::app); // Append mode for all subsequent writes
     if (!output_file.is_open()) {
         std::cerr << "Failed to open output file.\n";
         return 1;
@@ -106,9 +113,6 @@ int main(int argc, char* argv[]) {
     }
 
     // If no algorithm is specified, benchmark all and invoke VTune profiling
-    std::ofstream clear_file(out, std::ios::trunc);
-    clear_file.close();
-
     benchmark_algorithm("Naive", wfa::naive, seq1, seq2, x, o, e);
     run_vtune(executable, seq1, seq2, x, o, e, "naive", out);
 
@@ -121,7 +125,7 @@ int main(int argc, char* argv[]) {
     benchmark_algorithm("WFA2_Lib", wfalib2_align, seq1, seq2, x, o, e);
     run_vtune(executable, seq1, seq2, x, o, e, "wfa2_lib", out);
 
-
+    // Restore std::cout and std::cerr
     std::cout.rdbuf(cout_buf);
     std::cerr.rdbuf(cerr_buf);
 
