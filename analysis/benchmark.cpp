@@ -55,8 +55,6 @@ int main(int argc, char* argv[]) {
     int o = std::atoi(argv[4]);
     int e = std::atoi(argv[5]);
 
-    wfa::WFAlignerGapAffine aligner(4, 6, 2, wfa::WFAligner::Alignment, wfa::WFAligner::MemoryHigh);
-
     if (argc == 7) {
         std::string selected_algorithm = argv[6];
         if (selected_algorithm == "naive") benchmark_algorithm("Naive", wfa::naive, seq1, seq2, x, o, e);
@@ -77,7 +75,5 @@ int main(int argc, char* argv[]) {
         // benchmark_algorithm("SIMD_WFA", simd_wfa_align, seq1, seq2, x, o, e);
         benchmark_algorithm("WFA2_Lib", wfalib2_align, seq1, seq2, x, o, e);
     }
-
-    wavefront_aligner_delete(aligner);
     return 0;
 }
