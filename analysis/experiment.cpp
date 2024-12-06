@@ -4,39 +4,58 @@
 #include <vector>
 #include <cstdlib>
 #include <sstream>
-#include <unistd.h>
-#include <sys/types.h>
-#include <pwd.h>
+#include <chrono>
+#include <iomanip>
+#include "include/data_gen.hpp"
 
-// Function to execute the alignment executable and capture the output time
-double run_alignment(const std::string& executable, double error_rate, int sequence_length, int num_sequences, int x, int o, int e) {
+// Helper function to extract time in seconds from the formatted output
+double parse_time(const std::string& line) {
+    if (line.empty()) return 0.0;
+    size_t colon1 = line.find(':');
+    size_t colon2 = line.find(':', colon1 + 1);
+    size_t dot = line.find('.');
+
+    if (colon1 == std::string::npos || colon2 == std::string::npos || dot == std::string::npos) {
+        std::cerr << "Error parsing time: " << line << "\n";
+        return 0.0;
+    }
+
+    int hours = std::stoi(line.substr(0, colon1));
+    int minutes = std::stoi(line.substr(colon1 + 1, colon2 - colon1 - 1));
+    double seconds = std::stod(line.substr(colon2 + 1));
+
+    return hours * 3600 + minutes * 60 + seconds;
+}
+
+// Function to execute the alignment executable and capture the output
+double run_alignment(const std::string& executable, double error_rate, int sequence_length,
+    int num_sequences, int x, int o, int e, const std::string& algorithm) {
     std::ostringstream command;
-    command << executable << " " << error_rate << " " << sequence_length << " " << num_sequences << " " << x << " " << o << " " << e;
-    std::string cmd = command.str() + " > temp_output.txt";
+    command << executable << " " << error_rate << " " << sequence_length << " " << num_sequences
+        << " " << x << " " << o << " " << e;
 
+    std::string cmd = command.str() + " > temp_output.txt";
     int exit_code = std::system(cmd.c_str());
+
     if (exit_code != 0) {
         std::cerr << "Command failed: " << cmd << "\n";
-        return -1.0;
+        return 0.0;
     }
 
     std::ifstream temp_output("temp_output.txt");
     if (!temp_output) {
         std::cerr << "Failed to open temp_output.txt\n";
-        return -1.0;
+        return 0.0;
     }
 
     std::string line;
-    double avg_time = -1.0;
-
     while (std::getline(temp_output, line)) {
-        if (line.find("Wavefront:") != std::string::npos) {
-            avg_time = std::stod(line.substr(line.find(":") + 1));
+        if (line.find(algorithm + ":") != std::string::npos) {
+            return parse_time(line.substr(line.find(':') + 1));
         }
     }
 
-    temp_output.close();
-    return avg_time;
+    return 0.0; // Return 0 if time is not found
 }
 
 // Function to write data to the CSV file
@@ -58,33 +77,33 @@ void write_to_csv(const std::string& filename, const std::vector<std::vector<std
     csv_file.close();
 }
 
-// Experiment to vary error rate
+// Experiment to vary error rate and record times
 void experiment_vary_error_rate(const std::string& executable, const std::string& output_csv) {
     int mismatch_penalty = 4;
     int gap_opening_cost = 6;
     int gap_extension_cost = 2;
-    int num_sequences = 1000;
+    int num_samples = 1000;
     int sequence_length = 100;
 
     std::vector<double> error_rates = { 0.01, 0.05, 0.1, 0.2, 0.3 };
+    std::vector<std::string> algorithms = { "Wavefront", "Wavefront SIMD", "WFA2-lib" };
     std::vector<std::vector<std::string>> results;
 
     for (double error_rate : error_rates) {
-        double avg_time = run_alignment(executable, error_rate, sequence_length, num_sequences, mismatch_penalty, gap_opening_cost, gap_extension_cost);
-        if (avg_time < 0) {
-            std::cerr << "Error during alignment at error rate " << error_rate << "\n";
-            continue;
-        }
+        for (const auto& algorithm : algorithms) {
+            double avg_time = run_alignment(executable, error_rate, sequence_length, num_samples,
+                mismatch_penalty, gap_opening_cost, gap_extension_cost, algorithm);
 
-        results.push_back({
-            std::to_string(num_sequences),
-            std::to_string(sequence_length),
-            std::to_string(error_rate),
-            std::to_string(mismatch_penalty),
-            std::to_string(gap_opening_cost),
-            std::to_string(gap_extension_cost),
-            std::to_string(avg_time)
-            });
+            results.push_back({
+                std::to_string(num_samples),
+                std::to_string(sequence_length),
+                std::to_string(error_rate),
+                std::to_string(mismatch_penalty),
+                std::to_string(gap_opening_cost),
+                std::to_string(gap_extension_cost),
+                std::to_string(avg_time)
+                });
+        }
     }
 
     write_to_csv(output_csv, results);
@@ -97,11 +116,18 @@ int main() {
 
     // Write CSV header
     std::ofstream csv_file(output_csv);
+    if (!csv_file.is_open()) {
+        std::cerr << "Failed to open file: " << output_csv << "\n";
+        return 1;
+    }
+
     csv_file << "Sample Count,Sequence Length,Error Rate,Mismatch Penalty,Gap Opening Cost,Gap Extension Cost,Avg Time\n";
     csv_file.close();
 
     // Run experiment
     experiment_vary_error_rate(executable, output_csv);
+
+    std::cout << "Experiment completed. Results written to: " << output_csv << "\n";
 
     return 0;
 }
