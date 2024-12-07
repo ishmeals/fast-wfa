@@ -80,11 +80,11 @@ void experiment_vary_error_rate(const std::string& output_csv) {
     int mismatch_penalty = 4;
     int gap_opening_cost = 6;
     int gap_extension_cost = 2;
-    int num_samples = 1000;
-    int sequence_length = 100;
+    int num_samples = 100000;
+    int sequence_length = 250;
     std::vector<double> error_rates = { 0.01, 0.05, 0.1, 0.2, 0.3 };
 
-    std::vector<std::string> algorithms = { "Naive", "Wavefront", "Wavefront SIMD", "WFA2-lib" };
+    std::vector<std::string> algorithms = { /*"Naive", */"Wavefront", "Wavefront SIMD", "WFA2-lib" };
     for (double error_rate : error_rates) {
         for (const auto& algorithm : algorithms) {
             double avg_time = run_alignment(error_rate, sequence_length, num_samples, mismatch_penalty, gap_opening_cost, gap_extension_cost, algorithm);
@@ -98,10 +98,10 @@ void experiment_vary_sequence_length(const std::string& output_csv) {
     int mismatch_penalty = 4;
     int gap_opening_cost = 6;
     int gap_extension_cost = 2;
-    int num_samples = 1000;
+    int num_samples = 10000;
     std::vector<int> sequence_lengths = { 50, 100, 200, 500, 1000 };
 
-    std::vector<std::string> algorithms = { "Naive", "Wavefront", "Wavefront SIMD", "WFA2-lib" };
+    std::vector<std::string> algorithms = { /*"Naive",*/ "Wavefront", "Wavefront SIMD", "WFA2-lib" };
     for (int sequence_length : sequence_lengths) {
         for (const auto& algorithm : algorithms) {
             double avg_time = run_alignment(error_rate, sequence_length, num_samples, mismatch_penalty, gap_opening_cost, gap_extension_cost, algorithm);
@@ -115,10 +115,10 @@ void experiment_vary_gap_opening(const std::string& output_csv) {
     int sequence_length = 100;
     int mismatch_penalty = 4;
     int gap_extension_cost = 2;
-    int num_samples = 1000;
+    int num_samples = 100000;
     std::vector<int> gap_opening_costs = { 1, 3, 6, 10, 15 };
 
-    std::vector<std::string> algorithms = { "Naive", "Wavefront", "Wavefront SIMD", "WFA2-lib" };
+    std::vector<std::string> algorithms = { /*"Naive",*/ "Wavefront", "Wavefront SIMD", "WFA2-lib" };
     for (int gap_opening_cost : gap_opening_costs) {
         for (const auto& algorithm : algorithms) {
             double avg_time = run_alignment(error_rate, sequence_length, num_samples, mismatch_penalty, gap_opening_cost, gap_extension_cost, algorithm);
@@ -166,11 +166,11 @@ void experiment_joint_error_length(const std::string& output_csv) {
     int mismatch_penalty = 4;
     int gap_opening_cost = 6;
     int gap_extension_cost = 2;
-    int num_samples = 1000;
+    int num_samples = 10000;
     std::vector<int> sequence_lengths = { 50, 100, 200, 500 };
     std::vector<double> error_rates = { 0.01, 0.05, 0.1, 0.2 };
 
-    std::vector<std::string> algorithms = { "Naive", "Wavefront", "Wavefront SIMD", "WFA2-lib" };
+    std::vector<std::string> algorithms = { /*"Naive",*/ "Wavefront", "Wavefront SIMD", "WFA2-lib" };
     for (int sequence_length : sequence_lengths) {
         for (double error_rate : error_rates) {
             for (const auto& algorithm : algorithms) {
@@ -284,31 +284,31 @@ int main() {
         experiment_vary_error_rate(output_csv);
 
         std::cout << "Running Experiment: Sequence Length vs Time...\n";
-        // experiment_vary_sequence_length(output_csv);
+        experiment_vary_sequence_length(output_csv);
 
         std::cout << "Running Experiment: Gap Opening Cost vs Time...\n";
-        // experiment_vary_gap_opening(output_csv);
+        experiment_vary_gap_opening(output_csv);
 
         std::cout << "Running Experiment: Gap Extension Cost vs Time...\n";
-        // experiment_vary_gap_extension(output_csv);
+        //experiment_vary_gap_extension(output_csv);
 
         std::cout << "Running Experiment: Mismatch Penalty vs Time...\n";
-        // experiment_vary_mismatch_penalty(output_csv);
+        //experiment_vary_mismatch_penalty(output_csv);
 
         std::cout << "Running Experiment: Joint Impact of Error Rate and Sequence Length...\n";
-        // experiment_joint_error_length(output_csv);
+        experiment_joint_error_length(output_csv);
 
         std::cout << "Running Experiment: Interaction of Gap Costs...\n";
-        // experiment_interaction_gap_costs(output_csv);
+        //experiment_interaction_gap_costs(output_csv);
 
         std::cout << "Running Experiment: Sensitivity Analysis...\n";
-        // experiment_sensitivity_analysis(output_csv);
+        //experiment_sensitivity_analysis(output_csv);
 
         std::cout << "Running Experiment: Varying Error Rate with Increased Complexity...\n";
-        experiment_error_rate_complexity(output_csv);
+        //experiment_error_rate_complexity(output_csv);
 
         std::cout << "Running Experiment: Combination of Sequence Length and Gap Penalties...\n";
-        // experiment_length_gap_penalties(output_csv);
+        //experiment_length_gap_penalties(output_csv);
 
         std::cout << "All experiments completed. Results written to: " << output_csv << "\n";
     }
