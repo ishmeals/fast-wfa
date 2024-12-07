@@ -22,29 +22,27 @@ except FileNotFoundError:
 # Set seaborn aesthetics
 sns.set_theme(style="whitegrid")
 
-# Configure matplotlib to use LaTeX for text rendering
-plt.rcParams['text.usetex'] = False  # Disable LaTeX
+# Configure matplotlib font settings
 plt.rcParams['font.family'] = 'DejaVu Serif'  # Use a font similar to Computer Modern
 plt.rcParams['mathtext.fontset'] = 'cm'  # Use Computer Modern for math
 
-def plot_line(data, x, y, hue, title, x_label, y_label, output_file):
-    """Generate a line plot with logarithmic y-scale."""
+
+def plot_line(data, x, y, hue, title, x_label, y_label, output_file, sample_count, seq_length):
+    """Generate a line plot with dynamic title."""
     plt.figure(figsize=(10, 6))
     sns.lineplot(data=data, x=x, y=y, hue=hue, marker="o")
-    plt.yscale("log")  # Set logarithmic scale
-    plt.title(title)
+    plt.title(f"{title}\n(Sample Count: {sample_count}, Sequence Length: {seq_length})")
     plt.xlabel(x_label)
     plt.ylabel(y_label)
+    plt.yscale("log")
     plt.legend(title=hue)
     plt.tight_layout()
     plt.savefig(output_file)
     plt.close()
 
 
-def plot_heatmap_grid(data, x, y, z, title, x_label, y_label, output_file):
-    """
-    Generate a grid of heatmaps for each algorithm.
-    """
+def plot_heatmap_grid(data, x, y, z, title, x_label, y_label, output_file, sample_count, seq_length):
+    """Generate a grid of heatmaps for each algorithm with dynamic title and numeric gradient description."""
     algorithms = data["Algorithm"].unique()
     num_algorithms = len(algorithms)
     cols = 3  # Number of columns in the grid
@@ -60,10 +58,10 @@ def plot_heatmap_grid(data, x, y, z, title, x_label, y_label, output_file):
         sns.heatmap(
             pivot_table,
             annot=True,
-            fmt=".2e",  # Scientific notation
+            fmt=".2f",  # Regular numeric format
             cmap="viridis",
             ax=ax,
-            cbar_kws={"format": "%.1e"},  # Color bar in scientific notation
+            cbar_kws={"label": "Time (s)"},  # Add label to color bar
         )
         ax.set_title(algorithm)
         ax.set_xlabel(x_label)
@@ -75,21 +73,21 @@ def plot_heatmap_grid(data, x, y, z, title, x_label, y_label, output_file):
         ax = axes[row, col] if rows > 1 else axes[col]
         fig.delaxes(ax)
 
-    fig.suptitle(title, fontsize=16)
+    fig.suptitle(f"{title}\n(Sample Count: {sample_count}, Sequence Length: {seq_length})", fontsize=16)
     plt.savefig(output_file)
     plt.close()
 
 
 def plot_heatmap_single(data, x, y, z, title, x_label, y_label, output_file):
-    """Generate a single heatmap."""
+    """Generate a single heatmap with a gradient description."""
     plt.figure(figsize=(10, 6))
     pivot_table = data.pivot_table(index=y, columns=x, values=z)
     sns.heatmap(
         pivot_table,
         annot=True,
-        fmt=".2e",
+        fmt=".2f",  # Regular numeric format
         cmap="viridis",
-        cbar_kws={"format": "%.1e"},
+        cbar_kws={"label": "Time (s)"},  # Add label to color bar
     )
     plt.title(title)
     plt.xlabel(x_label)
@@ -196,7 +194,12 @@ experiments = {
 # Generate plots for each experiment
 for experiment, params in experiments.items():
     filtered_data = data[data["Experiment"] == experiment]
+    if filtered_data.empty:
+        continue
     output_file = os.path.join(output_dir, f"{experiment.replace(' ', '_')}.png")
+    sample_count = filtered_data["Sample Count"].iloc[0] if "Sample Count" in filtered_data.columns else "N/A"
+    seq_length = filtered_data["Sequence Length"].iloc[0] if "Sequence Length" in filtered_data.columns else "N/A"
+
     if params["type"] == "line":
         plot_line(
             filtered_data,
@@ -207,6 +210,8 @@ for experiment, params in experiments.items():
             x_label=params["x_label"],
             y_label=params["y_label"],
             output_file=output_file,
+            sample_count=sample_count,
+            seq_length=seq_length,
         )
     elif params["type"] == "heatmap_grid":
         plot_heatmap_grid(
@@ -218,6 +223,8 @@ for experiment, params in experiments.items():
             x_label=params["x_label"],
             y_label=params["y_label"],
             output_file=output_file,
+            sample_count=sample_count,
+            seq_length=seq_length,
         )
 
 print(f"Graphs saved to {output_dir}")

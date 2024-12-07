@@ -34,6 +34,17 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
+    // Benchmark Naive
+    auto start = std::chrono::system_clock::now();
+    for (const auto& pair : sequences) {
+        const std::string& a = pair.first;
+        const std::string& b = pair.second;
+        wfa::naive(a, b, x, o, e, arena1);
+    }
+    auto end = std::chrono::system_clock::now();
+    fmt::println("Naive: {:%T}", end - start);
+    output_file << fmt::format("Naive: {:%T}\n", end - start);
+
     // Benchmark Wavefront
     auto start = std::chrono::system_clock::now();
     wfa::wavefront_arena_t arena1;

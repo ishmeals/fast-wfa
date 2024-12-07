@@ -86,7 +86,7 @@ void experiment_vary_error_rate(const std::string& executable, const std::string
     int sequence_length = 100;
     std::vector<double> error_rates = { 0.01, 0.05, 0.1, 0.2, 0.3 };
 
-    std::vector<std::string> algorithms = { "Wavefront", "Wavefront SIMD", "WFA2-lib" };
+    std::vector<std::string> algorithms = { "Naive", "Wavefront", "Wavefront SIMD", "WFA2-lib" };
     for (double error_rate : error_rates) {
         for (const auto& algorithm : algorithms) {
             double avg_time = run_alignment(executable, error_rate, sequence_length, num_samples, mismatch_penalty, gap_opening_cost, gap_extension_cost, algorithm);
@@ -103,7 +103,7 @@ void experiment_vary_sequence_length(const std::string& executable, const std::s
     int num_samples = 1000;
     std::vector<int> sequence_lengths = { 50, 100, 200, 500, 1000 };
 
-    std::vector<std::string> algorithms = { "Wavefront", "Wavefront SIMD", "WFA2-lib" };
+    std::vector<std::string> algorithms = { "Naive", "Wavefront", "Wavefront SIMD", "WFA2-lib" };
     for (int sequence_length : sequence_lengths) {
         for (const auto& algorithm : algorithms) {
             double avg_time = run_alignment(executable, error_rate, sequence_length, num_samples, mismatch_penalty, gap_opening_cost, gap_extension_cost, algorithm);
@@ -120,7 +120,7 @@ void experiment_vary_gap_opening(const std::string& executable, const std::strin
     int num_samples = 1000;
     std::vector<int> gap_opening_costs = { 1, 3, 6, 10, 15 };
 
-    std::vector<std::string> algorithms = { "Wavefront", "Wavefront SIMD", "WFA2-lib" };
+    std::vector<std::string> algorithms = { "Naive", "Wavefront", "Wavefront SIMD", "WFA2-lib" };
     for (int gap_opening_cost : gap_opening_costs) {
         for (const auto& algorithm : algorithms) {
             double avg_time = run_alignment(executable, error_rate, sequence_length, num_samples, mismatch_penalty, gap_opening_cost, gap_extension_cost, algorithm);
@@ -137,7 +137,7 @@ void experiment_vary_gap_extension(const std::string& executable, const std::str
     int num_samples = 1000;
     std::vector<int> gap_extension_costs = { 1, 2, 5, 10, 20 };
 
-    std::vector<std::string> algorithms = { "Wavefront", "Wavefront SIMD", "WFA2-lib" };
+    std::vector<std::string> algorithms = { "Naive", "Wavefront", "Wavefront SIMD", "WFA2-lib" };
     for (int gap_extension_cost : gap_extension_costs) {
         for (const auto& algorithm : algorithms) {
             double avg_time = run_alignment(executable, error_rate, sequence_length, num_samples, mismatch_penalty, gap_opening_cost, gap_extension_cost, algorithm);
@@ -154,7 +154,7 @@ void experiment_vary_mismatch_penalty(const std::string& executable, const std::
     int num_samples = 1000;
     std::vector<int> mismatch_penalties = { 1, 2, 4, 8, 10 };
 
-    std::vector<std::string> algorithms = { "Wavefront", "Wavefront SIMD", "WFA2-lib" };
+    std::vector<std::string> algorithms = { "Naive", "Wavefront", "Wavefront SIMD", "WFA2-lib" };
     for (int mismatch_penalty : mismatch_penalties) {
         for (const auto& algorithm : algorithms) {
             double avg_time = run_alignment(executable, error_rate, sequence_length, num_samples, mismatch_penalty, gap_opening_cost, gap_extension_cost, algorithm);
@@ -172,7 +172,7 @@ void experiment_joint_error_length(const std::string& executable, const std::str
     std::vector<int> sequence_lengths = { 50, 100, 200, 500 };
     std::vector<double> error_rates = { 0.01, 0.05, 0.1, 0.2 };
 
-    std::vector<std::string> algorithms = { "Wavefront", "Wavefront SIMD", "WFA2-lib" };
+    std::vector<std::string> algorithms = { "Naive", "Wavefront", "Wavefront SIMD", "WFA2-lib" };
     for (int sequence_length : sequence_lengths) {
         for (double error_rate : error_rates) {
             for (const auto& algorithm : algorithms) {
@@ -188,11 +188,11 @@ void experiment_interaction_gap_costs(const std::string& executable, const std::
     double error_rate = 0.1;
     int sequence_length = 100;
     int mismatch_penalty = 4;
-    int num_samples = 1000;
+    int num_samples = 1000000;
     std::vector<int> gap_opening_costs = { 1, 3, 6, 10 };
     std::vector<int> gap_extension_costs = { 1, 2, 5, 10 };
 
-    std::vector<std::string> algorithms = { "Wavefront", "Wavefront SIMD", "WFA2-lib" };
+    std::vector<std::string> algorithms = { "Naive", "Wavefront", "Wavefront SIMD", "WFA2-lib" };
     for (int gap_opening_cost : gap_opening_costs) {
         for (int gap_extension_cost : gap_extension_costs) {
             for (const auto& algorithm : algorithms) {
@@ -207,12 +207,12 @@ void experiment_interaction_gap_costs(const std::string& executable, const std::
 void experiment_sensitivity_analysis(const std::string& executable, const std::string& output_csv) {
     double error_rate = 0.1;
     int sequence_length = 100;
-    int num_samples = 1000;
+    int num_samples = 1000000;
     std::vector<int> mismatch_penalties = { 2, 4, 8 };
     std::vector<int> gap_opening_costs = { 3, 6, 10 };
     std::vector<int> gap_extension_costs = { 1, 5, 10 };
 
-    std::vector<std::string> algorithms = { "Wavefront", "Wavefront SIMD", "WFA2-lib" };
+    std::vector<std::string> algorithms = { "Naive", "Wavefront", "Wavefront SIMD", "WFA2-lib" };
     for (int mismatch_penalty : mismatch_penalties) {
         for (int gap_opening_cost : gap_opening_costs) {
             for (int gap_extension_cost : gap_extension_costs) {
@@ -234,7 +234,7 @@ void experiment_error_rate_complexity(const std::string& executable, const std::
     std::vector<double> error_rates = { 0.01, 0.05, 0.1, 0.2, 0.3 };
     std::vector<int> gap_opening_costs = { 6, 10 };
 
-    std::vector<std::string> algorithms = { "Wavefront", "Wavefront SIMD", "WFA2-lib" };
+    std::vector<std::string> algorithms = { "Naive", "Wavefront", "Wavefront SIMD", "WFA2-lib" };
     for (double error_rate : error_rates) {
         for (int gap_opening_cost : gap_opening_costs) {
             for (const auto& algorithm : algorithms) {
@@ -254,7 +254,7 @@ void experiment_length_gap_penalties(const std::string& executable, const std::s
     std::vector<int> sequence_lengths = { 50, 100, 200, 500 };
     std::vector<int> gap_opening_costs = { 3, 6, 10 };
 
-    std::vector<std::string> algorithms = { "Wavefront", "Wavefront SIMD", "WFA2-lib" };
+    std::vector<std::string> algorithms = { "Naive", "Wavefront", "Wavefront SIMD", "WFA2-lib" };
     for (int sequence_length : sequence_lengths) {
         for (int gap_opening_cost : gap_opening_costs) {
             for (const auto& algorithm : algorithms) {
