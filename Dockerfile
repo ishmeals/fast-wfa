@@ -20,12 +20,14 @@ RUN mkdir fast-wfa
 RUN mkdir fast-wfa/src
 RUN mkdir fast-wfa/include
 RUN mkdir fast-wfa/tests
+RUN mkdir fast-wfa/analysis
 #RUN mkdir SynthesisSearch/vcpkg_overlays
 RUN mkdir fast-wfa/.git
 COPY CMakeLists.txt CMakePresets.json fast-wfa
 COPY src fast-wfa/src
 COPY include fast-wfa/include
 COPY tests fast-wfa/tests
+COPY analysis fast-wfa/analysis
 #COPY vcpkg_overlays SynthesisSearch/vcpkg_overlays
 COPY .git SynthesisSearch/.git
 WORKDIR fast-wfa
@@ -38,4 +40,4 @@ WORKDIR ./out/build/linux-release
 RUN ninja
 WORKDIR ./bin
 
-CMD ["./wfa_tool"]
+ENTRYPOINT ["./wfa2_comparison"]
