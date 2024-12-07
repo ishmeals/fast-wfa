@@ -2,137 +2,58 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <cstdlib>
-#include <sstream>
 #include <chrono>
 #include <iomanip>
-
 #include "include/wfa.hpp"
 #include "include/wfa_simd.hpp"
 #include "include/naive.hpp"
 #include "bindings/cpp/WFAligner.hpp"
-#include <filesystem>
 #include "include/data_gen.hpp"
-#include "fmt/format.h"
-#include "fmt/chrono.h"
 
-
-// Helper function to find the repository base
-std::filesystem::path get_repository_base() {
-    std::filesystem::path current_path = std::filesystem::current_path();
-    while (!current_path.empty() && !std::filesystem::exists(current_path / ".git")) {
-        current_path = current_path.parent_path();
-    }
-    if (current_path.empty()) {
-        throw std::runtime_error("Repository base could not be determined. Make sure you are running within a git repository.");
-    }
-    return current_path;
-}
-
-// Helper function to extract time in seconds from the formatted output
-double parse_time(const std::string& line) {
-    if (line.empty()) return 0.0;
-    size_t colon1 = line.find(':');
-    size_t colon2 = line.find(':', colon1 + 1);
-    size_t dot = line.find('.');
-
-    if (colon1 == std::string::npos || colon2 == std::string::npos || dot == std::string::npos) {
-        std::cerr << "Error parsing time: " << line << "\n";
-        return 0.0;
-    }
-
-    int hours = std::stoi(line.substr(0, colon1));
-    int minutes = std::stoi(line.substr(colon1 + 1, colon2 - colon1 - 1));
-    double seconds = std::stod(line.substr(colon2 + 1));
-
-    return hours * 3600 + minutes * 60 + seconds;
-}
-
-// Function to execute the alignment executable and capture the output
-double run_alignment(const std::string& executable, double error_rate, int sequence_length,
-    int num_sequences, int x, int o, int e, const std::string& algorithm) {
-    // Determine temp output path
-    /*std::filesystem::path repo_base = get_repository_base();
-    std::filesystem::path temp_output_path = repo_base / "results" / "temp_output.txt";
-
-    std::ostringstream command;
-    command << executable << " " << error_rate << " " << sequence_length << " " << num_sequences
-        << " " << x << " " << o << " " << e;
-
-    std::string cmd = command.str() + " > " + temp_output_path.string();
-    int exit_code = std::system(cmd.c_str());
-
-    if (exit_code != 0) {
-        std::cerr << "Command failed: " << cmd << "\n";
-        return 0.0;
-    }
-
-    std::ifstream temp_output(temp_output_path);
-    if (!temp_output) {
-        std::cerr << "Failed to open " << temp_output_path << "\n";
-        return 0.0;
-    }
-    std::cout << "line" << std::endl;
-    std::string line;*/
-
+// Function to execute and benchmark algorithms
+double run_alignment(double error_rate, int sequence_length, int num_sequences,
+    int mismatch_penalty, int gap_opening_cost, int gap_extension_cost,
+    const std::string& algorithm) {
     // Generate sequences
     auto sequences = wfa::modify_sequences(sequence_length, num_sequences, error_rate);
 
-    // Benchmark Naive
-    auto start = std::chrono::system_clock::now();
-    wfa::wavefront_arena_t arena1;
-    for (const auto& pair : sequences) {
-        const std::string& a = pair.first;
-        const std::string& b = pair.second;
-        wfa::naive(a, b, x, o, e);
-    }
-    auto end = std::chrono::system_clock::now();
-    //fmt::println("Naive: {:%T}", end - start);
-
-
-    // Benchmark Wavefront
-    start = std::chrono::system_clock::now();
-    for (const auto& pair : sequences) {
-        const std::string& a = pair.first;
-        const std::string& b = pair.second;
-        wfa::wavefront(a, b, x, o, e, arena1);
-    }
-    end = std::chrono::system_clock::now();
-    //fmt::println("Wavefront: {:%T}", end - start);
-
-    // Benchmark Wavefront SIMD
-    start = std::chrono::system_clock::now();
-    wfa::wavefront_arena_t arena2;
-    for (const auto& pair : sequences) {
-        const std::string& a = pair.first;
-        const std::string& b = pair.second;
-        wfa::wavefront_simd(a, b, x, o, e, arena2);
-    }
-    end = std::chrono::system_clock::now();
-    //fmt::println("Wavefront SIMD: {:%T}", end - start);
-
-    // Benchmark WFA2-lib
-    wfa::WFAlignerGapAffine aligner(x, o, e, wfa::WFAligner::Alignment, wfa::WFAligner::MemoryHigh);
-    start = std::chrono::system_clock::now();
-    for (const auto& pair : sequences) {
-        const std::string& a = pair.first;
-        const std::string& b = pair.second;
-
-        aligner.alignEnd2End(a, b);
-    }
-    end = std::chrono::system_clock::now();
-    //fmt::println("WFA2-lib: {:%T}", end - start);
-    auto dur = end - start;
-    auto ms = std::chrono::round<std::chrono::milliseconds>(dur);
-
-    while (std::getline(temp_output, line)) {
-        std::cout << line << std::endl;
-        if (line.find(algorithm + ":") != std::string::npos) {
-            return parse_time(line.substr(line.find(':') + 1));
+    auto start = std::chrono::high_resolution_clock::now();
+    if (algorithm == "Naive") {
+        for (const auto& pair : sequences) {
+            const std::string& a = pair.first;
+            const std::string& b = pair.second;
+            wfa::naive(a, b, mismatch_penalty, gap_opening_cost, gap_extension_cost);
         }
     }
+    else if (algorithm == "Wavefront") {
+        wfa::wavefront_arena_t arena;
+        for (const auto& pair : sequences) {
+            const std::string& a = pair.first;
+            const std::string& b = pair.second;
+            wfa::wavefront(a, b, mismatch_penalty, gap_opening_cost, gap_extension_cost, arena);
+        }
+    }
+    else if (algorithm == "Wavefront SIMD") {
+        wfa::wavefront_arena_t arena;
+        for (const auto& pair : sequences) {
+            const std::string& a = pair.first;
+            const std::string& b = pair.second;
+            wfa::wavefront_simd(a, b, mismatch_penalty, gap_opening_cost, gap_extension_cost, arena);
+        }
+    }
+    else if (algorithm == "WFA2-lib") {
+        wfa::WFAlignerGapAffine aligner(mismatch_penalty, gap_opening_cost, gap_extension_cost,
+            wfa::WFAligner::Alignment, wfa::WFAligner::MemoryHigh);
+        for (const auto& pair : sequences) {
+            const std::string& a = pair.first;
+            const std::string& b = pair.second;
+            aligner.alignEnd2End(a, b);
+        }
+    }
+    auto end = std::chrono::high_resolution_clock::now();
 
-    return 0.0; // Return 0 if time is not found
+    // Calculate and return elapsed time in milliseconds
+    return std::chrono::duration<double, std::milli>(end - start).count();
 }
 
 // Function to write data to the CSV file
@@ -153,6 +74,7 @@ void write_to_csv(const std::string& filename, const std::vector<std::vector<std
 
     csv_file.close();
 }
+
 
 void experiment_vary_error_rate(const std::string& executable, const std::string& output_csv) {
     int mismatch_penalty = 4;
@@ -341,15 +263,10 @@ void experiment_length_gap_penalties(const std::string& executable, const std::s
     }
 }
 
+
 // Main function
 int main() {
-    // Dynamically determine the repository base and paths
-    std::string repo_base = get_repository_base().string();
-    std::string executable = repo_base + "/out/build/linux-debug/bin/wfa2_comparison";
-    std::string output_csv = repo_base + "/results/exp_results.csv";
-
-    // Ensure the results directory exists
-    std::filesystem::create_directories(repo_base + "/results");
+    std::string output_csv = "exp_results.csv";
 
     // Write CSV header
     std::ofstream csv_file(output_csv);
@@ -402,4 +319,3 @@ int main() {
 
     return 0;
 }
-
