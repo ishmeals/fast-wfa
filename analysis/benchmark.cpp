@@ -72,7 +72,5 @@ int main(int argc, char* argv[]) {
     }
     end = std::chrono::system_clock::now();
     fmt::println("WFA2-lib: {:%T}", end - start);
-
-    output_file.close();
     return 0;
 }
