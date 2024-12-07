@@ -9,6 +9,19 @@
 #include <filesystem>
 #include "include/data_gen.hpp"
 
+
+// Helper function to find the repository base
+std::filesystem::path get_repository_base() {
+    std::filesystem::path current_path = std::filesystem::current_path();
+    while (!current_path.empty() && !std::filesystem::exists(current_path / ".git")) {
+        current_path = current_path.parent_path();
+    }
+    if (current_path.empty()) {
+        throw std::runtime_error("Repository base could not be determined. Make sure you are running within a git repository.");
+    }
+    return current_path;
+}
+
 // Helper function to extract time in seconds from the formatted output
 double parse_time(const std::string& line) {
     if (line.empty()) return 0.0;
@@ -31,11 +44,15 @@ double parse_time(const std::string& line) {
 // Function to execute the alignment executable and capture the output
 double run_alignment(const std::string& executable, double error_rate, int sequence_length,
     int num_sequences, int x, int o, int e, const std::string& algorithm) {
+    // Determine temp output path
+    std::filesystem::path repo_base = get_repository_base();
+    std::filesystem::path temp_output_path = repo_base / "results" / "temp_output.txt";
+
     std::ostringstream command;
     command << executable << " " << error_rate << " " << sequence_length << " " << num_sequences
         << " " << x << " " << o << " " << e;
 
-    std::string cmd = command.str() + " > temp_output.txt";
+    std::string cmd = command.str() + " > " + temp_output_path.string();
     int exit_code = std::system(cmd.c_str());
 
     if (exit_code != 0) {
@@ -43,9 +60,9 @@ double run_alignment(const std::string& executable, double error_rate, int seque
         return 0.0;
     }
 
-    std::ifstream temp_output("temp_output.txt");
+    std::ifstream temp_output(temp_output_path);
     if (!temp_output) {
-        std::cerr << "Failed to open temp_output.txt\n";
+        std::cerr << "Failed to open " << temp_output_path << "\n";
         return 0.0;
     }
 
@@ -265,22 +282,10 @@ void experiment_length_gap_penalties(const std::string& executable, const std::s
     }
 }
 
-// Helper function to find the repository base
-std::string get_repository_base() {
-    std::filesystem::path current_path = std::filesystem::current_path();
-    while (!current_path.empty() && !std::filesystem::exists(current_path / ".git")) {
-        current_path = current_path.parent_path();
-    }
-    if (current_path.empty()) {
-        throw std::runtime_error("Repository base could not be determined. Make sure you are running within a git repository.");
-    }
-    return current_path.string();
-}
-
 // Main function
 int main() {
     // Dynamically determine the repository base and paths
-    std::string repo_base = get_repository_base();
+    std::string repo_base = get_repository_base().string();
     std::string executable = repo_base + "/out/build/linux-debug/bin/wfa2_comparison";
     std::string output_csv = repo_base + "/results/exp_results.csv";
 
