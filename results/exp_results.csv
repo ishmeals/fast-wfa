@@ -1,61 +1,61 @@
 Algorithm,Experiment,Sample Count,Sequence Length,Error Rate,Mismatch Penalty,Gap Opening Cost,Gap Extension Cost,Avg Time
-Naive,Error v Time,1000,100,0.010000,4,6,2,0.769117
-Wavefront,Error v Time,1000,100,0.010000,4,6,2,0.002831
-Wavefront SIMD,Error v Time,1000,100,0.010000,4,6,2,0.001251
-WFA2-lib,Error v Time,1000,100,0.010000,4,6,2,0.000713
-Naive,Error v Time,1000,100,0.050000,4,6,2,0.706971
-Wavefront,Error v Time,1000,100,0.050000,4,6,2,0.008832
-Wavefront SIMD,Error v Time,1000,100,0.050000,4,6,2,0.010044
-WFA2-lib,Error v Time,1000,100,0.050000,4,6,2,0.003933
-Naive,Error v Time,1000,100,0.100000,4,6,2,0.755439
-Wavefront,Error v Time,1000,100,0.100000,4,6,2,0.032587
-Wavefront SIMD,Error v Time,1000,100,0.100000,4,6,2,0.035786
-WFA2-lib,Error v Time,1000,100,0.100000,4,6,2,0.010642
-Naive,Error v Time,1000,100,0.200000,4,6,2,0.737182
-Wavefront,Error v Time,1000,100,0.200000,4,6,2,0.119366
-Wavefront SIMD,Error v Time,1000,100,0.200000,4,6,2,0.147018
-WFA2-lib,Error v Time,1000,100,0.200000,4,6,2,0.030846
-Naive,Error v Time,1000,100,0.300000,4,6,2,0.730803
-Wavefront,Error v Time,1000,100,0.300000,4,6,2,0.254914
-Wavefront SIMD,Error v Time,1000,100,0.300000,4,6,2,0.295624
-WFA2-lib,Error v Time,1000,100,0.300000,4,6,2,0.058173
-Naive,Error Rate & Complexity,1000,100,0.010000,4,6,2,0.692014
-Wavefront,Error Rate & Complexity,1000,100,0.010000,4,6,2,0.001852
-Wavefront SIMD,Error Rate & Complexity,1000,100,0.010000,4,6,2,0.001339
-WFA2-lib,Error Rate & Complexity,1000,100,0.010000,4,6,2,0.000892
-Naive,Error Rate & Complexity,1000,100,0.010000,4,10,2,0.693815
-Wavefront,Error Rate & Complexity,1000,100,0.010000,4,10,2,0.002109
-Wavefront SIMD,Error Rate & Complexity,1000,100,0.010000,4,10,2,0.001655
-WFA2-lib,Error Rate & Complexity,1000,100,0.010000,4,10,2,0.001033
-Naive,Error Rate & Complexity,1000,100,0.050000,4,6,2,0.919512
-Wavefront,Error Rate & Complexity,1000,100,0.050000,4,6,2,0.008415
-Wavefront SIMD,Error Rate & Complexity,1000,100,0.050000,4,6,2,0.009183
-WFA2-lib,Error Rate & Complexity,1000,100,0.050000,4,6,2,0.003226
-Naive,Error Rate & Complexity,1000,100,0.050000,4,10,2,0.714503
-Wavefront,Error Rate & Complexity,1000,100,0.050000,4,10,2,0.006381
-Wavefront SIMD,Error Rate & Complexity,1000,100,0.050000,4,10,2,0.007303
-WFA2-lib,Error Rate & Complexity,1000,100,0.050000,4,10,2,0.002924
-Naive,Error Rate & Complexity,1000,100,0.100000,4,6,2,0.969766
-Wavefront,Error Rate & Complexity,1000,100,0.100000,4,6,2,0.030758
-Wavefront SIMD,Error Rate & Complexity,1000,100,0.100000,4,6,2,0.035793
-WFA2-lib,Error Rate & Complexity,1000,100,0.100000,4,6,2,0.011371
-Naive,Error Rate & Complexity,1000,100,0.100000,4,10,2,0.744889
-Wavefront,Error Rate & Complexity,1000,100,0.100000,4,10,2,0.022729
-Wavefront SIMD,Error Rate & Complexity,1000,100,0.100000,4,10,2,0.025806
-WFA2-lib,Error Rate & Complexity,1000,100,0.100000,4,10,2,0.008297
-Naive,Error Rate & Complexity,1000,100,0.200000,4,6,2,0.740594
-Wavefront,Error Rate & Complexity,1000,100,0.200000,4,6,2,0.118032
-Wavefront SIMD,Error Rate & Complexity,1000,100,0.200000,4,6,2,0.132202
-WFA2-lib,Error Rate & Complexity,1000,100,0.200000,4,6,2,0.031400
-Naive,Error Rate & Complexity,1000,100,0.200000,4,10,2,0.707999
-Wavefront,Error Rate & Complexity,1000,100,0.200000,4,10,2,0.099641
-Wavefront SIMD,Error Rate & Complexity,1000,100,0.200000,4,10,2,0.121475
-WFA2-lib,Error Rate & Complexity,1000,100,0.200000,4,10,2,0.026997
-Naive,Error Rate & Complexity,1000,100,0.300000,4,6,2,0.731238
-Wavefront,Error Rate & Complexity,1000,100,0.300000,4,6,2,0.253720
-Wavefront SIMD,Error Rate & Complexity,1000,100,0.300000,4,6,2,0.292981
-WFA2-lib,Error Rate & Complexity,1000,100,0.300000,4,6,2,0.055500
-Naive,Error Rate & Complexity,1000,100,0.300000,4,10,2,0.722727
-Wavefront,Error Rate & Complexity,1000,100,0.300000,4,10,2,0.229306
-Wavefront SIMD,Error Rate & Complexity,1000,100,0.300000,4,10,2,0.273473
-WFA2-lib,Error Rate & Complexity,1000,100,0.300000,4,10,2,0.052915
+Naive,Error v Time,1000,100,0.010000,4,6,2,0.000000
+Wavefront,Error v Time,1000,100,0.010000,4,6,2,0.000000
+Wavefront SIMD,Error v Time,1000,100,0.010000,4,6,2,0.000000
+WFA2-lib,Error v Time,1000,100,0.010000,4,6,2,0.000000
+Naive,Error v Time,1000,100,0.050000,4,6,2,0.000000
+Wavefront,Error v Time,1000,100,0.050000,4,6,2,0.000000
+Wavefront SIMD,Error v Time,1000,100,0.050000,4,6,2,0.000000
+WFA2-lib,Error v Time,1000,100,0.050000,4,6,2,0.000000
+Naive,Error v Time,1000,100,0.100000,4,6,2,0.000000
+Wavefront,Error v Time,1000,100,0.100000,4,6,2,0.000000
+Wavefront SIMD,Error v Time,1000,100,0.100000,4,6,2,0.000000
+WFA2-lib,Error v Time,1000,100,0.100000,4,6,2,0.000000
+Naive,Error v Time,1000,100,0.200000,4,6,2,0.000000
+Wavefront,Error v Time,1000,100,0.200000,4,6,2,0.000000
+Wavefront SIMD,Error v Time,1000,100,0.200000,4,6,2,0.000000
+WFA2-lib,Error v Time,1000,100,0.200000,4,6,2,0.000000
+Naive,Error v Time,1000,100,0.300000,4,6,2,0.000000
+Wavefront,Error v Time,1000,100,0.300000,4,6,2,0.000000
+Wavefront SIMD,Error v Time,1000,100,0.300000,4,6,2,0.000000
+WFA2-lib,Error v Time,1000,100,0.300000,4,6,2,0.000000
+Naive,Error Rate & Complexity,1000,100,0.010000,4,6,2,0.000000
+Wavefront,Error Rate & Complexity,1000,100,0.010000,4,6,2,0.000000
+Wavefront SIMD,Error Rate & Complexity,1000,100,0.010000,4,6,2,0.000000
+WFA2-lib,Error Rate & Complexity,1000,100,0.010000,4,6,2,0.000000
+Naive,Error Rate & Complexity,1000,100,0.010000,4,10,2,0.000000
+Wavefront,Error Rate & Complexity,1000,100,0.010000,4,10,2,0.000000
+Wavefront SIMD,Error Rate & Complexity,1000,100,0.010000,4,10,2,0.000000
+WFA2-lib,Error Rate & Complexity,1000,100,0.010000,4,10,2,0.000000
+Naive,Error Rate & Complexity,1000,100,0.050000,4,6,2,0.000000
+Wavefront,Error Rate & Complexity,1000,100,0.050000,4,6,2,0.000000
+Wavefront SIMD,Error Rate & Complexity,1000,100,0.050000,4,6,2,0.000000
+WFA2-lib,Error Rate & Complexity,1000,100,0.050000,4,6,2,0.000000
+Naive,Error Rate & Complexity,1000,100,0.050000,4,10,2,0.000000
+Wavefront,Error Rate & Complexity,1000,100,0.050000,4,10,2,0.000000
+Wavefront SIMD,Error Rate & Complexity,1000,100,0.050000,4,10,2,0.000000
+WFA2-lib,Error Rate & Complexity,1000,100,0.050000,4,10,2,0.000000
+Naive,Error Rate & Complexity,1000,100,0.100000,4,6,2,0.000000
+Wavefront,Error Rate & Complexity,1000,100,0.100000,4,6,2,0.000000
+Wavefront SIMD,Error Rate & Complexity,1000,100,0.100000,4,6,2,0.000000
+WFA2-lib,Error Rate & Complexity,1000,100,0.100000,4,6,2,0.000000
+Naive,Error Rate & Complexity,1000,100,0.100000,4,10,2,0.000000
+Wavefront,Error Rate & Complexity,1000,100,0.100000,4,10,2,0.000000
+Wavefront SIMD,Error Rate & Complexity,1000,100,0.100000,4,10,2,0.000000
+WFA2-lib,Error Rate & Complexity,1000,100,0.100000,4,10,2,0.000000
+Naive,Error Rate & Complexity,1000,100,0.200000,4,6,2,0.000000
+Wavefront,Error Rate & Complexity,1000,100,0.200000,4,6,2,0.000000
+Wavefront SIMD,Error Rate & Complexity,1000,100,0.200000,4,6,2,0.000000
+WFA2-lib,Error Rate & Complexity,1000,100,0.200000,4,6,2,0.000000
+Naive,Error Rate & Complexity,1000,100,0.200000,4,10,2,0.000000
+Wavefront,Error Rate & Complexity,1000,100,0.200000,4,10,2,0.000000
+Wavefront SIMD,Error Rate & Complexity,1000,100,0.200000,4,10,2,0.000000
+WFA2-lib,Error Rate & Complexity,1000,100,0.200000,4,10,2,0.000000
+Naive,Error Rate & Complexity,1000,100,0.300000,4,6,2,0.000000
+Wavefront,Error Rate & Complexity,1000,100,0.300000,4,6,2,0.000000
+Wavefront SIMD,Error Rate & Complexity,1000,100,0.300000,4,6,2,0.000000
+WFA2-lib,Error Rate & Complexity,1000,100,0.300000,4,6,2,0.000000
+Naive,Error Rate & Complexity,1000,100,0.300000,4,10,2,0.000000
+Wavefront,Error Rate & Complexity,1000,100,0.300000,4,10,2,0.000000
+Wavefront SIMD,Error Rate & Complexity,1000,100,0.300000,4,10,2,0.000000
+WFA2-lib,Error Rate & Complexity,1000,100,0.300000,4,10,2,0.000000
