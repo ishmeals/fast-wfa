@@ -140,4 +140,12 @@ add_test(NAME NaiveAlignmentTests COMMAND naive_tests)
 if (LINUX)
 	add_executable(wfa2_comparison analysis/benchmark.cpp)
 	target_link_libraries(wfa2_comparison PRIVATE ${LIB_WFA} wfa2::wfa2cpp)
+
+	#
+	# Experiment Executable
+	#
+
+	add_executable(experiment analysis/experiment.cpp)
+	target_link_libraries(experiment PRIVATE ${LIB_WFA} fmt::fmt wfa2::wfa2cpp)
+
 endif()
