@@ -108,7 +108,7 @@ The `tests` folder contains the set of tests used to check our implementation.
 ## Code structure
 
 All of our library code is contained within the `wfa` namespace. The `naive.h/cpp` files contain the implementation of the SWG approach, and a naive dynamic programming approach to the WFA algorithm used for testing purposes. `wfa.h/cpp` contains the implementation of the wavefront data structures, and the basic `wfa::wavefront` implementation. `wfa_simd.h/cpp` contains the implementation of `wfa::simd__wavefront`. `data_gen.h/cpp` contains the code to generate the synthetic sequences.
-
+```
 ├── CMakeLists.txt          # Project-wide CMake configuration
 ├── Dockerfile              # Dockerfile for building and running the project
 ├── include/                # Header files
@@ -130,7 +130,7 @@ All of our library code is contained within the `wfa` namespace. The `naive.h/cp
 │   ├── CMakeLists.txt      # Test build configuration
 ├── .git/                   # Git repository metadata
 └── out/                    # Build output directory
-
+```
 # Executables
 
 ## Quick Tools
