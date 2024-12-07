@@ -37,3 +37,4 @@ vc140.pdb
 .vs/
 
 analysis/temp_output.txt
+analysis/benchmark_results.txt
