@@ -41,7 +41,7 @@ int main(int argc, char* argv[]) {
     for (const auto& pair : sequences) {
         const std::string& a = pair.first;
         const std::string& b = pair.second;
-        wfa::naive(a, b, x, o, e, arena1);
+        wfa::naive(a, b, x, o, e);
     }
     auto end = std::chrono::system_clock::now();
     fmt::println("Naive: {:%T}", end - start);
