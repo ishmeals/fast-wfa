@@ -6,6 +6,31 @@ This is an implementation of the Wavefront Alignment algorithm in both a autovec
 
 Given the fragile nature of building C++ project, we provide a dockerfile that is capable of building and runnning the program as it is. While this is the recommended approach, manual build steps are listed below.
 
+## Dockerfile
+The dockerfile is setup to display benchmarking results depending based on the passed in parameters.
+
+From the root of the repository, build the dockerfile with
+
+```
+docker build -t wfa .
+```
+Once the image is built, you can run 
+
+```
+docker run wfa <error_rate> <sequence_length> <num_sequences> <x> <o> <e>
+```
+For example, the command
+```
+docker run wfa 0.02 100 10000 4 6 2
+```
+Yields the following output
+```
+Naive: 00:00:00.130498
+Wavefront: 00:00:00.002120
+Wavefront SIMD: 00:00:00.002345
+WFA2-lib: 00:00:00.003775
+```
+
 ## CMake
 
 ### Linux
