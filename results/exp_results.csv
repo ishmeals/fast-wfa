@@ -1,319 +1,61 @@
 Algorithm,Experiment,Sample Count,Sequence Length,Error Rate,Mismatch Penalty,Gap Opening Cost,Gap Extension Cost,Avg Time
-Wavefront,Error v Time,1000,100,0.010000,4,6,2,0.004650
-Wavefront SIMD,Error v Time,1000,100,0.010000,4,6,2,0.001658
-WFA2-lib,Error v Time,1000,100,0.010000,4,6,2,0.000879
-Wavefront,Error v Time,1000,100,0.050000,4,6,2,0.010577
-Wavefront SIMD,Error v Time,1000,100,0.050000,4,6,2,0.010922
-WFA2-lib,Error v Time,1000,100,0.050000,4,6,2,0.004014
-Wavefront,Error v Time,1000,100,0.100000,4,6,2,0.038736
-Wavefront SIMD,Error v Time,1000,100,0.100000,4,6,2,0.048603
-WFA2-lib,Error v Time,1000,100,0.100000,4,6,2,0.015497
-Wavefront,Error v Time,1000,100,0.200000,4,6,2,0.173350
-Wavefront SIMD,Error v Time,1000,100,0.200000,4,6,2,0.188613
-WFA2-lib,Error v Time,1000,100,0.200000,4,6,2,0.054582
-Wavefront,Error v Time,1000,100,0.300000,4,6,2,0.301449
-Wavefront SIMD,Error v Time,1000,100,0.300000,4,6,2,0.296923
-WFA2-lib,Error v Time,1000,100,0.300000,4,6,2,0.056289
-Wavefront,Sequence Length v Time,1000,50,0.100000,4,6,2,0.008451
-Wavefront SIMD,Sequence Length v Time,1000,50,0.100000,4,6,2,0.009137
-WFA2-lib,Sequence Length v Time,1000,50,0.100000,4,6,2,0.003365
-Wavefront,Sequence Length v Time,1000,100,0.100000,4,6,2,0.027385
-Wavefront SIMD,Sequence Length v Time,1000,100,0.100000,4,6,2,0.032697
-WFA2-lib,Sequence Length v Time,1000,100,0.100000,4,6,2,0.009794
-Wavefront,Sequence Length v Time,1000,200,0.100000,4,6,2,0.103744
-Wavefront SIMD,Sequence Length v Time,1000,200,0.100000,4,6,2,0.124464
-WFA2-lib,Sequence Length v Time,1000,200,0.100000,4,6,2,0.023462
-Wavefront,Sequence Length v Time,1000,500,0.100000,4,6,2,0.620461
-Wavefront SIMD,Sequence Length v Time,1000,500,0.100000,4,6,2,0.766476
-WFA2-lib,Sequence Length v Time,1000,500,0.100000,4,6,2,0.067256
-Wavefront,Sequence Length v Time,1000,1000,0.100000,4,6,2,2.713369
-Wavefront SIMD,Sequence Length v Time,1000,1000,0.100000,4,6,2,2.951489
-WFA2-lib,Sequence Length v Time,1000,1000,0.100000,4,6,2,0.140093
-Wavefront,Gap Opening v Time,1000,100,0.100000,4,1,2,0.067797
-Wavefront SIMD,Gap Opening v Time,1000,100,0.100000,4,1,2,0.081077
-WFA2-lib,Gap Opening v Time,1000,100,0.100000,4,1,2,0.020907
-Wavefront,Gap Opening v Time,1000,100,0.100000,4,3,2,0.057226
-Wavefront SIMD,Gap Opening v Time,1000,100,0.100000,4,3,2,0.068898
-WFA2-lib,Gap Opening v Time,1000,100,0.100000,4,3,2,0.019051
-Wavefront,Gap Opening v Time,1000,100,0.100000,4,6,2,0.027769
-Wavefront SIMD,Gap Opening v Time,1000,100,0.100000,4,6,2,0.032955
-WFA2-lib,Gap Opening v Time,1000,100,0.100000,4,6,2,0.010262
-Wavefront,Gap Opening v Time,1000,100,0.100000,4,10,2,0.021487
-Wavefront SIMD,Gap Opening v Time,1000,100,0.100000,4,10,2,0.025207
-WFA2-lib,Gap Opening v Time,1000,100,0.100000,4,10,2,0.007821
-Wavefront,Gap Opening v Time,1000,100,0.100000,4,15,2,0.024114
-Wavefront SIMD,Gap Opening v Time,1000,100,0.100000,4,15,2,0.028769
-WFA2-lib,Gap Opening v Time,1000,100,0.100000,4,15,2,0.007738
-Wavefront,Gap Extension v Time,1000,100,0.100000,4,6,1,0.087988
-Wavefront SIMD,Gap Extension v Time,1000,100,0.100000,4,6,1,0.095046
-WFA2-lib,Gap Extension v Time,1000,100,0.100000,4,6,1,0.021142
-Wavefront,Gap Extension v Time,1000,100,0.100000,4,6,2,0.027552
-Wavefront SIMD,Gap Extension v Time,1000,100,0.100000,4,6,2,0.034428
-WFA2-lib,Gap Extension v Time,1000,100,0.100000,4,6,2,0.009695
-Wavefront,Gap Extension v Time,1000,100,0.100000,4,6,5,0.024789
-Wavefront SIMD,Gap Extension v Time,1000,100,0.100000,4,6,5,0.026555
-WFA2-lib,Gap Extension v Time,1000,100,0.100000,4,6,5,0.008520
-Wavefront,Gap Extension v Time,1000,100,0.100000,4,6,10,0.012462
-Wavefront SIMD,Gap Extension v Time,1000,100,0.100000,4,6,10,0.012911
-WFA2-lib,Gap Extension v Time,1000,100,0.100000,4,6,10,0.004549
-Wavefront,Gap Extension v Time,1000,100,0.100000,4,6,20,0.007640
-Wavefront SIMD,Gap Extension v Time,1000,100,0.100000,4,6,20,0.007966
-WFA2-lib,Gap Extension v Time,1000,100,0.100000,4,6,20,0.003491
-Wavefront,Mismatch Penalty v Time,1000,100,0.100000,1,6,2,0.005196
-Wavefront SIMD,Mismatch Penalty v Time,1000,100,0.100000,1,6,2,0.005178
-WFA2-lib,Mismatch Penalty v Time,1000,100,0.100000,1,6,2,0.002776
-Wavefront,Mismatch Penalty v Time,1000,100,0.100000,2,6,2,0.009194
-Wavefront SIMD,Mismatch Penalty v Time,1000,100,0.100000,2,6,2,0.009692
-WFA2-lib,Mismatch Penalty v Time,1000,100,0.100000,2,6,2,0.003684
-Wavefront,Mismatch Penalty v Time,1000,100,0.100000,4,6,2,0.027587
-Wavefront SIMD,Mismatch Penalty v Time,1000,100,0.100000,4,6,2,0.032374
-WFA2-lib,Mismatch Penalty v Time,1000,100,0.100000,4,6,2,0.009257
-Wavefront,Mismatch Penalty v Time,1000,100,0.100000,8,6,2,0.112600
-Wavefront SIMD,Mismatch Penalty v Time,1000,100,0.100000,8,6,2,0.132768
-WFA2-lib,Mismatch Penalty v Time,1000,100,0.100000,8,6,2,0.031281
-Wavefront,Mismatch Penalty v Time,1000,100,0.100000,10,6,2,0.173711
-Wavefront SIMD,Mismatch Penalty v Time,1000,100,0.100000,10,6,2,0.198144
-WFA2-lib,Mismatch Penalty v Time,1000,100,0.100000,10,6,2,0.044299
-Wavefront,Joint Error & Length,1000,50,0.010000,4,6,2,0.001036
-Wavefront SIMD,Joint Error & Length,1000,50,0.010000,4,6,2,0.000955
-WFA2-lib,Joint Error & Length,1000,50,0.010000,4,6,2,0.000587
-Wavefront,Joint Error & Length,1000,50,0.050000,4,6,2,0.003059
-Wavefront SIMD,Joint Error & Length,1000,50,0.050000,4,6,2,0.003009
-WFA2-lib,Joint Error & Length,1000,50,0.050000,4,6,2,0.001460
-Wavefront,Joint Error & Length,1000,50,0.100000,4,6,2,0.008805
-Wavefront SIMD,Joint Error & Length,1000,50,0.100000,4,6,2,0.009090
-WFA2-lib,Joint Error & Length,1000,50,0.100000,4,6,2,0.003576
-Wavefront,Joint Error & Length,1000,50,0.200000,4,6,2,0.027216
-Wavefront SIMD,Joint Error & Length,1000,50,0.200000,4,6,2,0.032324
-WFA2-lib,Joint Error & Length,1000,50,0.200000,4,6,2,0.009637
-Wavefront,Joint Error & Length,1000,100,0.010000,4,6,2,0.001679
-Wavefront SIMD,Joint Error & Length,1000,100,0.010000,4,6,2,0.001462
-WFA2-lib,Joint Error & Length,1000,100,0.010000,4,6,2,0.000738
-Wavefront,Joint Error & Length,1000,100,0.050000,4,6,2,0.008481
-Wavefront SIMD,Joint Error & Length,1000,100,0.050000,4,6,2,0.009701
-WFA2-lib,Joint Error & Length,1000,100,0.050000,4,6,2,0.003495
-Wavefront,Joint Error & Length,1000,100,0.100000,4,6,2,0.028348
-Wavefront SIMD,Joint Error & Length,1000,100,0.100000,4,6,2,0.033991
-WFA2-lib,Joint Error & Length,1000,100,0.100000,4,6,2,0.009939
-Wavefront,Joint Error & Length,1000,100,0.200000,4,6,2,0.109779
-Wavefront SIMD,Joint Error & Length,1000,100,0.200000,4,6,2,0.138878
-WFA2-lib,Joint Error & Length,1000,100,0.200000,4,6,2,0.030142
-Wavefront,Joint Error & Length,1000,200,0.010000,4,6,2,0.003407
-Wavefront SIMD,Joint Error & Length,1000,200,0.010000,4,6,2,0.002890
-WFA2-lib,Joint Error & Length,1000,200,0.010000,4,6,2,0.001290
-Wavefront,Joint Error & Length,1000,200,0.050000,4,6,2,0.028982
-Wavefront SIMD,Joint Error & Length,1000,200,0.050000,4,6,2,0.033276
-WFA2-lib,Joint Error & Length,1000,200,0.050000,4,6,2,0.009827
-Wavefront,Joint Error & Length,1000,200,0.100000,4,6,2,0.102914
-Wavefront SIMD,Joint Error & Length,1000,200,0.100000,4,6,2,0.123845
-WFA2-lib,Joint Error & Length,1000,200,0.100000,4,6,2,0.023766
-Wavefront,Joint Error & Length,1000,200,0.200000,4,6,2,0.399843
-Wavefront SIMD,Joint Error & Length,1000,200,0.200000,4,6,2,0.483951
-WFA2-lib,Joint Error & Length,1000,200,0.200000,4,6,2,0.068776
-Wavefront,Joint Error & Length,1000,500,0.010000,4,6,2,0.011390
-Wavefront SIMD,Joint Error & Length,1000,500,0.010000,4,6,2,0.010784
-WFA2-lib,Joint Error & Length,1000,500,0.010000,4,6,2,0.003607
-Wavefront,Joint Error & Length,1000,500,0.050000,4,6,2,0.158687
-Wavefront SIMD,Joint Error & Length,1000,500,0.050000,4,6,2,0.199662
-WFA2-lib,Joint Error & Length,1000,500,0.050000,4,6,2,0.026610
-Wavefront,Joint Error & Length,1000,500,0.100000,4,6,2,0.617132
-Wavefront SIMD,Joint Error & Length,1000,500,0.100000,4,6,2,0.765474
-WFA2-lib,Joint Error & Length,1000,500,0.100000,4,6,2,0.067681
-Wavefront,Joint Error & Length,1000,500,0.200000,4,6,2,2.472131
-Wavefront SIMD,Joint Error & Length,1000,500,0.200000,4,6,2,3.060185
-WFA2-lib,Joint Error & Length,1000,500,0.200000,4,6,2,0.189837
-Wavefront,Gap Costs Interaction,1000,100,0.100000,4,1,1,0.114603
-Wavefront SIMD,Gap Costs Interaction,1000,100,0.100000,4,1,1,0.123130
-WFA2-lib,Gap Costs Interaction,1000,100,0.100000,4,1,1,0.029147
-Wavefront,Gap Costs Interaction,1000,100,0.100000,4,1,2,0.067275
-Wavefront SIMD,Gap Costs Interaction,1000,100,0.100000,4,1,2,0.077889
-WFA2-lib,Gap Costs Interaction,1000,100,0.100000,4,1,2,0.020631
-Wavefront,Gap Costs Interaction,1000,100,0.100000,4,1,5,0.035075
-Wavefront SIMD,Gap Costs Interaction,1000,100,0.100000,4,1,5,0.041483
-WFA2-lib,Gap Costs Interaction,1000,100,0.100000,4,1,5,0.011875
-Wavefront,Gap Costs Interaction,1000,100,0.100000,4,1,10,0.026382
-Wavefront SIMD,Gap Costs Interaction,1000,100,0.100000,4,1,10,0.024189
-WFA2-lib,Gap Costs Interaction,1000,100,0.100000,4,1,10,0.006938
-Wavefront,Gap Costs Interaction,1000,100,0.100000,4,3,1,0.113693
-Wavefront SIMD,Gap Costs Interaction,1000,100,0.100000,4,3,1,0.127713
-WFA2-lib,Gap Costs Interaction,1000,100,0.100000,4,3,1,0.029654
-Wavefront,Gap Costs Interaction,1000,100,0.100000,4,3,2,0.058389
-Wavefront SIMD,Gap Costs Interaction,1000,100,0.100000,4,3,2,0.071396
-WFA2-lib,Gap Costs Interaction,1000,100,0.100000,4,3,2,0.018780
-Wavefront,Gap Costs Interaction,1000,100,0.100000,4,3,5,0.029280
-Wavefront SIMD,Gap Costs Interaction,1000,100,0.100000,4,3,5,0.033899
-WFA2-lib,Gap Costs Interaction,1000,100,0.100000,4,3,5,0.009306
-Wavefront,Gap Costs Interaction,1000,100,0.100000,4,3,10,0.019994
-Wavefront SIMD,Gap Costs Interaction,1000,100,0.100000,4,3,10,0.021856
-WFA2-lib,Gap Costs Interaction,1000,100,0.100000,4,3,10,0.006597
-Wavefront,Gap Costs Interaction,1000,100,0.100000,4,6,1,0.102635
-Wavefront SIMD,Gap Costs Interaction,1000,100,0.100000,4,6,1,0.097722
-WFA2-lib,Gap Costs Interaction,1000,100,0.100000,4,6,1,0.022197
-Wavefront,Gap Costs Interaction,1000,100,0.100000,4,6,2,0.027460
-Wavefront SIMD,Gap Costs Interaction,1000,100,0.100000,4,6,2,0.032033
-WFA2-lib,Gap Costs Interaction,1000,100,0.100000,4,6,2,0.009724
-Wavefront,Gap Costs Interaction,1000,100,0.100000,4,6,5,0.025579
-Wavefront SIMD,Gap Costs Interaction,1000,100,0.100000,4,6,5,0.027084
-WFA2-lib,Gap Costs Interaction,1000,100,0.100000,4,6,5,0.007821
-Wavefront,Gap Costs Interaction,1000,100,0.100000,4,6,10,0.012658
-Wavefront SIMD,Gap Costs Interaction,1000,100,0.100000,4,6,10,0.012936
-WFA2-lib,Gap Costs Interaction,1000,100,0.100000,4,6,10,0.004992
-Wavefront,Gap Costs Interaction,1000,100,0.100000,4,10,1,0.062127
-Wavefront SIMD,Gap Costs Interaction,1000,100,0.100000,4,10,1,0.074582
-WFA2-lib,Gap Costs Interaction,1000,100,0.100000,4,10,1,0.017538
-Wavefront,Gap Costs Interaction,1000,100,0.100000,4,10,2,0.022510
-Wavefront SIMD,Gap Costs Interaction,1000,100,0.100000,4,10,2,0.026198
-WFA2-lib,Gap Costs Interaction,1000,100,0.100000,4,10,2,0.007769
-Wavefront,Gap Costs Interaction,1000,100,0.100000,4,10,5,0.019754
-Wavefront SIMD,Gap Costs Interaction,1000,100,0.100000,4,10,5,0.024290
-WFA2-lib,Gap Costs Interaction,1000,100,0.100000,4,10,5,0.007418
-Wavefront,Gap Costs Interaction,1000,100,0.100000,4,10,10,0.010310
-Wavefront SIMD,Gap Costs Interaction,1000,100,0.100000,4,10,10,0.010335
-WFA2-lib,Gap Costs Interaction,1000,100,0.100000,4,10,10,0.003864
-Wavefront,Sensitivity Analysis,1000,100,0.100000,2,3,1,0.028002
-Wavefront SIMD,Sensitivity Analysis,1000,100,0.100000,2,3,1,0.039827
-WFA2-lib,Sensitivity Analysis,1000,100,0.100000,2,3,1,0.009069
-Wavefront,Sensitivity Analysis,1000,100,0.100000,2,3,5,0.011485
-Wavefront SIMD,Sensitivity Analysis,1000,100,0.100000,2,3,5,0.012313
-WFA2-lib,Sensitivity Analysis,1000,100,0.100000,2,3,5,0.004067
-Wavefront,Sensitivity Analysis,1000,100,0.100000,2,3,10,0.007092
-Wavefront SIMD,Sensitivity Analysis,1000,100,0.100000,2,3,10,0.007593
-WFA2-lib,Sensitivity Analysis,1000,100,0.100000,2,3,10,0.003472
-Wavefront,Sensitivity Analysis,1000,100,0.100000,2,6,1,0.018780
-Wavefront SIMD,Sensitivity Analysis,1000,100,0.100000,2,6,1,0.021035
-WFA2-lib,Sensitivity Analysis,1000,100,0.100000,2,6,1,0.006196
-Wavefront,Sensitivity Analysis,1000,100,0.100000,2,6,5,0.008668
-Wavefront SIMD,Sensitivity Analysis,1000,100,0.100000,2,6,5,0.008954
-WFA2-lib,Sensitivity Analysis,1000,100,0.100000,2,6,5,0.003899
-Wavefront,Sensitivity Analysis,1000,100,0.100000,2,6,10,0.005588
-Wavefront SIMD,Sensitivity Analysis,1000,100,0.100000,2,6,10,0.005452
-WFA2-lib,Sensitivity Analysis,1000,100,0.100000,2,6,10,0.002643
-Wavefront,Sensitivity Analysis,1000,100,0.100000,2,10,1,0.011528
-Wavefront SIMD,Sensitivity Analysis,1000,100,0.100000,2,10,1,0.013737
-WFA2-lib,Sensitivity Analysis,1000,100,0.100000,2,10,1,0.005424
-Wavefront,Sensitivity Analysis,1000,100,0.100000,2,10,5,0.006068
-Wavefront SIMD,Sensitivity Analysis,1000,100,0.100000,2,10,5,0.006598
-WFA2-lib,Sensitivity Analysis,1000,100,0.100000,2,10,5,0.002987
-Wavefront,Sensitivity Analysis,1000,100,0.100000,2,10,10,0.005069
-Wavefront SIMD,Sensitivity Analysis,1000,100,0.100000,2,10,10,0.004973
-WFA2-lib,Sensitivity Analysis,1000,100,0.100000,2,10,10,0.002431
-Wavefront,Sensitivity Analysis,1000,100,0.100000,4,3,1,0.111606
-Wavefront SIMD,Sensitivity Analysis,1000,100,0.100000,4,3,1,0.135007
-WFA2-lib,Sensitivity Analysis,1000,100,0.100000,4,3,1,0.031341
-Wavefront,Sensitivity Analysis,1000,100,0.100000,4,3,5,0.029921
-Wavefront SIMD,Sensitivity Analysis,1000,100,0.100000,4,3,5,0.033106
-WFA2-lib,Sensitivity Analysis,1000,100,0.100000,4,3,5,0.010211
-Wavefront,Sensitivity Analysis,1000,100,0.100000,4,3,10,0.021708
-Wavefront SIMD,Sensitivity Analysis,1000,100,0.100000,4,3,10,0.022874
-WFA2-lib,Sensitivity Analysis,1000,100,0.100000,4,3,10,0.005874
-Wavefront,Sensitivity Analysis,1000,100,0.100000,4,6,1,0.086597
-Wavefront SIMD,Sensitivity Analysis,1000,100,0.100000,4,6,1,0.093873
-WFA2-lib,Sensitivity Analysis,1000,100,0.100000,4,6,1,0.022098
-Wavefront,Sensitivity Analysis,1000,100,0.100000,4,6,5,0.025742
-Wavefront SIMD,Sensitivity Analysis,1000,100,0.100000,4,6,5,0.027130
-WFA2-lib,Sensitivity Analysis,1000,100,0.100000,4,6,5,0.008376
-Wavefront,Sensitivity Analysis,1000,100,0.100000,4,6,10,0.014285
-Wavefront SIMD,Sensitivity Analysis,1000,100,0.100000,4,6,10,0.013006
-WFA2-lib,Sensitivity Analysis,1000,100,0.100000,4,6,10,0.004710
-Wavefront,Sensitivity Analysis,1000,100,0.100000,4,10,1,0.069529
-Wavefront SIMD,Sensitivity Analysis,1000,100,0.100000,4,10,1,0.071493
-WFA2-lib,Sensitivity Analysis,1000,100,0.100000,4,10,1,0.018340
-Wavefront,Sensitivity Analysis,1000,100,0.100000,4,10,5,0.019670
-Wavefront SIMD,Sensitivity Analysis,1000,100,0.100000,4,10,5,0.021235
-WFA2-lib,Sensitivity Analysis,1000,100,0.100000,4,10,5,0.006386
-Wavefront,Sensitivity Analysis,1000,100,0.100000,4,10,10,0.009916
-Wavefront SIMD,Sensitivity Analysis,1000,100,0.100000,4,10,10,0.010859
-WFA2-lib,Sensitivity Analysis,1000,100,0.100000,4,10,10,0.004376
-Wavefront,Sensitivity Analysis,1000,100,0.100000,8,3,1,0.330248
-Wavefront SIMD,Sensitivity Analysis,1000,100,0.100000,8,3,1,0.359858
-WFA2-lib,Sensitivity Analysis,1000,100,0.100000,8,3,1,0.077300
-Wavefront,Sensitivity Analysis,1000,100,0.100000,8,3,5,0.082982
-Wavefront SIMD,Sensitivity Analysis,1000,100,0.100000,8,3,5,0.101594
-WFA2-lib,Sensitivity Analysis,1000,100,0.100000,8,3,5,0.031489
-Wavefront,Sensitivity Analysis,1000,100,0.100000,8,3,10,0.056453
-Wavefront SIMD,Sensitivity Analysis,1000,100,0.100000,8,3,10,0.057549
-WFA2-lib,Sensitivity Analysis,1000,100,0.100000,8,3,10,0.017102
-Wavefront,Sensitivity Analysis,1000,100,0.100000,8,6,1,0.343164
-Wavefront SIMD,Sensitivity Analysis,1000,100,0.100000,8,6,1,0.362356
-WFA2-lib,Sensitivity Analysis,1000,100,0.100000,8,6,1,0.072001
-Wavefront,Sensitivity Analysis,1000,100,0.100000,8,6,5,0.083784
-Wavefront SIMD,Sensitivity Analysis,1000,100,0.100000,8,6,5,0.090043
-WFA2-lib,Sensitivity Analysis,1000,100,0.100000,8,6,5,0.024853
-Wavefront,Sensitivity Analysis,1000,100,0.100000,8,6,10,0.029724
-Wavefront SIMD,Sensitivity Analysis,1000,100,0.100000,8,6,10,0.035033
-WFA2-lib,Sensitivity Analysis,1000,100,0.100000,8,6,10,0.010432
-Wavefront,Sensitivity Analysis,1000,100,0.100000,8,10,1,0.311986
-Wavefront SIMD,Sensitivity Analysis,1000,100,0.100000,8,10,1,0.357102
-WFA2-lib,Sensitivity Analysis,1000,100,0.100000,8,10,1,0.067235
-Wavefront,Sensitivity Analysis,1000,100,0.100000,8,10,5,0.077387
-Wavefront SIMD,Sensitivity Analysis,1000,100,0.100000,8,10,5,0.078687
-WFA2-lib,Sensitivity Analysis,1000,100,0.100000,8,10,5,0.020649
-Wavefront,Sensitivity Analysis,1000,100,0.100000,8,10,10,0.028637
-Wavefront SIMD,Sensitivity Analysis,1000,100,0.100000,8,10,10,0.030829
-WFA2-lib,Sensitivity Analysis,1000,100,0.100000,8,10,10,0.010082
-Wavefront,Error Rate & Complexity,1000,100,0.010000,4,6,2,0.001715
-Wavefront SIMD,Error Rate & Complexity,1000,100,0.010000,4,6,2,0.001713
-WFA2-lib,Error Rate & Complexity,1000,100,0.010000,4,6,2,0.000770
-Wavefront,Error Rate & Complexity,1000,100,0.010000,4,10,2,0.001706
-Wavefront SIMD,Error Rate & Complexity,1000,100,0.010000,4,10,2,0.001426
-WFA2-lib,Error Rate & Complexity,1000,100,0.010000,4,10,2,0.000651
-Wavefront,Error Rate & Complexity,1000,100,0.050000,4,6,2,0.008374
-Wavefront SIMD,Error Rate & Complexity,1000,100,0.050000,4,6,2,0.009560
-WFA2-lib,Error Rate & Complexity,1000,100,0.050000,4,6,2,0.003319
-Wavefront,Error Rate & Complexity,1000,100,0.050000,4,10,2,0.006247
-Wavefront SIMD,Error Rate & Complexity,1000,100,0.050000,4,10,2,0.006967
-WFA2-lib,Error Rate & Complexity,1000,100,0.050000,4,10,2,0.002807
-Wavefront,Error Rate & Complexity,1000,100,0.100000,4,6,2,0.027900
-Wavefront SIMD,Error Rate & Complexity,1000,100,0.100000,4,6,2,0.032994
-WFA2-lib,Error Rate & Complexity,1000,100,0.100000,4,6,2,0.009795
-Wavefront,Error Rate & Complexity,1000,100,0.100000,4,10,2,0.022303
-Wavefront SIMD,Error Rate & Complexity,1000,100,0.100000,4,10,2,0.025390
-WFA2-lib,Error Rate & Complexity,1000,100,0.100000,4,10,2,0.007890
-Wavefront,Error Rate & Complexity,1000,100,0.200000,4,6,2,0.099431
-Wavefront SIMD,Error Rate & Complexity,1000,100,0.200000,4,6,2,0.123394
-WFA2-lib,Error Rate & Complexity,1000,100,0.200000,4,6,2,0.029445
-Wavefront,Error Rate & Complexity,1000,100,0.200000,4,10,2,0.088461
-Wavefront SIMD,Error Rate & Complexity,1000,100,0.200000,4,10,2,0.109923
-WFA2-lib,Error Rate & Complexity,1000,100,0.200000,4,10,2,0.026527
-Wavefront,Error Rate & Complexity,1000,100,0.300000,4,6,2,0.243419
-Wavefront SIMD,Error Rate & Complexity,1000,100,0.300000,4,6,2,0.273165
-WFA2-lib,Error Rate & Complexity,1000,100,0.300000,4,6,2,0.057486
-Wavefront,Error Rate & Complexity,1000,100,0.300000,4,10,2,0.216446
-Wavefront SIMD,Error Rate & Complexity,1000,100,0.300000,4,10,2,0.247114
-WFA2-lib,Error Rate & Complexity,1000,100,0.300000,4,10,2,0.050025
-Wavefront,Length & Gap Penalties,1000,50,0.050000,4,3,2,0.005332
-Wavefront SIMD,Length & Gap Penalties,1000,50,0.050000,4,3,2,0.006227
-WFA2-lib,Length & Gap Penalties,1000,50,0.050000,4,3,2,0.002166
-Wavefront,Length & Gap Penalties,1000,50,0.050000,4,6,2,0.003304
-Wavefront SIMD,Length & Gap Penalties,1000,50,0.050000,4,6,2,0.003325
-WFA2-lib,Length & Gap Penalties,1000,50,0.050000,4,6,2,0.001518
-Wavefront,Length & Gap Penalties,1000,50,0.050000,4,10,2,0.002409
-Wavefront SIMD,Length & Gap Penalties,1000,50,0.050000,4,10,2,0.002384
-WFA2-lib,Length & Gap Penalties,1000,50,0.050000,4,10,2,0.001317
-Wavefront,Length & Gap Penalties,1000,100,0.050000,4,3,2,0.016700
-Wavefront SIMD,Length & Gap Penalties,1000,100,0.050000,4,3,2,0.018841
-WFA2-lib,Length & Gap Penalties,1000,100,0.050000,4,3,2,0.006474
-Wavefront,Length & Gap Penalties,1000,100,0.050000,4,6,2,0.008209
-Wavefront SIMD,Length & Gap Penalties,1000,100,0.050000,4,6,2,0.009927
-WFA2-lib,Length & Gap Penalties,1000,100,0.050000,4,6,2,0.003355
-Wavefront,Length & Gap Penalties,1000,100,0.050000,4,10,2,0.006311
-Wavefront SIMD,Length & Gap Penalties,1000,100,0.050000,4,10,2,0.006425
-WFA2-lib,Length & Gap Penalties,1000,100,0.050000,4,10,2,0.002810
-Wavefront,Length & Gap Penalties,1000,200,0.050000,4,3,2,0.061477
-Wavefront SIMD,Length & Gap Penalties,1000,200,0.050000,4,3,2,0.076278
-WFA2-lib,Length & Gap Penalties,1000,200,0.050000,4,3,2,0.016003
-Wavefront,Length & Gap Penalties,1000,200,0.050000,4,6,2,0.027977
-Wavefront SIMD,Length & Gap Penalties,1000,200,0.050000,4,6,2,0.034108
-WFA2-lib,Length & Gap Penalties,1000,200,0.050000,4,6,2,0.008867
-Wavefront,Length & Gap Penalties,1000,200,0.050000,4,10,2,0.022244
-Wavefront SIMD,Length & Gap Penalties,1000,200,0.050000,4,10,2,0.025352
-WFA2-lib,Length & Gap Penalties,1000,200,0.050000,4,10,2,0.007587
-Wavefront,Length & Gap Penalties,1000,500,0.050000,4,3,2,0.339526
-Wavefront SIMD,Length & Gap Penalties,1000,500,0.050000,4,3,2,0.408484
-WFA2-lib,Length & Gap Penalties,1000,500,0.050000,4,3,2,0.058858
-Wavefront,Length & Gap Penalties,1000,500,0.050000,4,6,2,0.165767
-Wavefront SIMD,Length & Gap Penalties,1000,500,0.050000,4,6,2,0.196298
-WFA2-lib,Length & Gap Penalties,1000,500,0.050000,4,6,2,0.029579
-Wavefront,Length & Gap Penalties,1000,500,0.050000,4,10,2,0.153184
-Wavefront SIMD,Length & Gap Penalties,1000,500,0.050000,4,10,2,0.180905
-WFA2-lib,Length & Gap Penalties,1000,500,0.050000,4,10,2,0.025152
+Naive,Error v Time,1000,100,0.010000,4,6,2,0.769117
+Wavefront,Error v Time,1000,100,0.010000,4,6,2,0.002831
+Wavefront SIMD,Error v Time,1000,100,0.010000,4,6,2,0.001251
+WFA2-lib,Error v Time,1000,100,0.010000,4,6,2,0.000713
+Naive,Error v Time,1000,100,0.050000,4,6,2,0.706971
+Wavefront,Error v Time,1000,100,0.050000,4,6,2,0.008832
+Wavefront SIMD,Error v Time,1000,100,0.050000,4,6,2,0.010044
+WFA2-lib,Error v Time,1000,100,0.050000,4,6,2,0.003933
+Naive,Error v Time,1000,100,0.100000,4,6,2,0.755439
+Wavefront,Error v Time,1000,100,0.100000,4,6,2,0.032587
+Wavefront SIMD,Error v Time,1000,100,0.100000,4,6,2,0.035786
+WFA2-lib,Error v Time,1000,100,0.100000,4,6,2,0.010642
+Naive,Error v Time,1000,100,0.200000,4,6,2,0.737182
+Wavefront,Error v Time,1000,100,0.200000,4,6,2,0.119366
+Wavefront SIMD,Error v Time,1000,100,0.200000,4,6,2,0.147018
+WFA2-lib,Error v Time,1000,100,0.200000,4,6,2,0.030846
+Naive,Error v Time,1000,100,0.300000,4,6,2,0.730803
+Wavefront,Error v Time,1000,100,0.300000,4,6,2,0.254914
+Wavefront SIMD,Error v Time,1000,100,0.300000,4,6,2,0.295624
+WFA2-lib,Error v Time,1000,100,0.300000,4,6,2,0.058173
+Naive,Error Rate & Complexity,1000,100,0.010000,4,6,2,0.692014
+Wavefront,Error Rate & Complexity,1000,100,0.010000,4,6,2,0.001852
+Wavefront SIMD,Error Rate & Complexity,1000,100,0.010000,4,6,2,0.001339
+WFA2-lib,Error Rate & Complexity,1000,100,0.010000,4,6,2,0.000892
+Naive,Error Rate & Complexity,1000,100,0.010000,4,10,2,0.693815
+Wavefront,Error Rate & Complexity,1000,100,0.010000,4,10,2,0.002109
+Wavefront SIMD,Error Rate & Complexity,1000,100,0.010000,4,10,2,0.001655
+WFA2-lib,Error Rate & Complexity,1000,100,0.010000,4,10,2,0.001033
+Naive,Error Rate & Complexity,1000,100,0.050000,4,6,2,0.919512
+Wavefront,Error Rate & Complexity,1000,100,0.050000,4,6,2,0.008415
+Wavefront SIMD,Error Rate & Complexity,1000,100,0.050000,4,6,2,0.009183
+WFA2-lib,Error Rate & Complexity,1000,100,0.050000,4,6,2,0.003226
+Naive,Error Rate & Complexity,1000,100,0.050000,4,10,2,0.714503
+Wavefront,Error Rate & Complexity,1000,100,0.050000,4,10,2,0.006381
+Wavefront SIMD,Error Rate & Complexity,1000,100,0.050000,4,10,2,0.007303
+WFA2-lib,Error Rate & Complexity,1000,100,0.050000,4,10,2,0.002924
+Naive,Error Rate & Complexity,1000,100,0.100000,4,6,2,0.969766
+Wavefront,Error Rate & Complexity,1000,100,0.100000,4,6,2,0.030758
+Wavefront SIMD,Error Rate & Complexity,1000,100,0.100000,4,6,2,0.035793
+WFA2-lib,Error Rate & Complexity,1000,100,0.100000,4,6,2,0.011371
+Naive,Error Rate & Complexity,1000,100,0.100000,4,10,2,0.744889
+Wavefront,Error Rate & Complexity,1000,100,0.100000,4,10,2,0.022729
+Wavefront SIMD,Error Rate & Complexity,1000,100,0.100000,4,10,2,0.025806
+WFA2-lib,Error Rate & Complexity,1000,100,0.100000,4,10,2,0.008297
+Naive,Error Rate & Complexity,1000,100,0.200000,4,6,2,0.740594
+Wavefront,Error Rate & Complexity,1000,100,0.200000,4,6,2,0.118032
+Wavefront SIMD,Error Rate & Complexity,1000,100,0.200000,4,6,2,0.132202
+WFA2-lib,Error Rate & Complexity,1000,100,0.200000,4,6,2,0.031400
+Naive,Error Rate & Complexity,1000,100,0.200000,4,10,2,0.707999
+Wavefront,Error Rate & Complexity,1000,100,0.200000,4,10,2,0.099641
+Wavefront SIMD,Error Rate & Complexity,1000,100,0.200000,4,10,2,0.121475
+WFA2-lib,Error Rate & Complexity,1000,100,0.200000,4,10,2,0.026997
+Naive,Error Rate & Complexity,1000,100,0.300000,4,6,2,0.731238
+Wavefront,Error Rate & Complexity,1000,100,0.300000,4,6,2,0.253720
+Wavefront SIMD,Error Rate & Complexity,1000,100,0.300000,4,6,2,0.292981
+WFA2-lib,Error Rate & Complexity,1000,100,0.300000,4,6,2,0.055500
+Naive,Error Rate & Complexity,1000,100,0.300000,4,10,2,0.722727
+Wavefront,Error Rate & Complexity,1000,100,0.300000,4,10,2,0.229306
+Wavefront SIMD,Error Rate & Complexity,1000,100,0.300000,4,10,2,0.273473
+WFA2-lib,Error Rate & Complexity,1000,100,0.300000,4,10,2,0.052915
