@@ -9,7 +9,7 @@ Given the fragile nature of building C++ project, we provide a dockerfile that i
 ## Dockerfile
 The dockerfile is setup to display benchmarking results depending based on the passed in parameters.
 
-From the root of the directory, build the dockerfile with
+From the root of the repository, build the dockerfile with
 
 ```
 docker build -t wfa .
