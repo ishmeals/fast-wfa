@@ -303,31 +303,31 @@ int main() {
         experiment_vary_error_rate(executable, output_csv);
 
         std::cout << "Running Experiment: Sequence Length vs Time...\n";
-        experiment_vary_sequence_length(executable, output_csv);
+        // experiment_vary_sequence_length(executable, output_csv);
 
         std::cout << "Running Experiment: Gap Opening Cost vs Time...\n";
-        experiment_vary_gap_opening(executable, output_csv);
+        // experiment_vary_gap_opening(executable, output_csv);
 
         std::cout << "Running Experiment: Gap Extension Cost vs Time...\n";
-        experiment_vary_gap_extension(executable, output_csv);
+        // experiment_vary_gap_extension(executable, output_csv);
 
         std::cout << "Running Experiment: Mismatch Penalty vs Time...\n";
-        experiment_vary_mismatch_penalty(executable, output_csv);
+        // experiment_vary_mismatch_penalty(executable, output_csv);
 
         std::cout << "Running Experiment: Joint Impact of Error Rate and Sequence Length...\n";
-        experiment_joint_error_length(executable, output_csv);
+        // experiment_joint_error_length(executable, output_csv);
 
         std::cout << "Running Experiment: Interaction of Gap Costs...\n";
-        experiment_interaction_gap_costs(executable, output_csv);
+        // experiment_interaction_gap_costs(executable, output_csv);
 
         std::cout << "Running Experiment: Sensitivity Analysis...\n";
-        experiment_sensitivity_analysis(executable, output_csv);
+        // experiment_sensitivity_analysis(executable, output_csv);
 
         std::cout << "Running Experiment: Varying Error Rate with Increased Complexity...\n";
         experiment_error_rate_complexity(executable, output_csv);
 
         std::cout << "Running Experiment: Combination of Sequence Length and Gap Penalties...\n";
-        experiment_length_gap_penalties(executable, output_csv);
+        // experiment_length_gap_penalties(executable, output_csv);
 
         std::cout << "All experiments completed. Results written to: " << output_csv << "\n";
     }
