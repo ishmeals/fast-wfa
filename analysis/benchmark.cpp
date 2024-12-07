@@ -1,5 +1,6 @@
 #include "include/wfa.hpp"
 #include "include/wfa_simd.hpp"
+#include "include/naive.hpp"
 #include "bindings/cpp/WFAligner.hpp"
 #include "include/data_gen.hpp"
 #include "fmt/format.h"
@@ -36,6 +37,7 @@ int main(int argc, char* argv[]) {
 
     // Benchmark Naive
     auto start = std::chrono::system_clock::now();
+    wfa::wavefront_arena_t arena1;
     for (const auto& pair : sequences) {
         const std::string& a = pair.first;
         const std::string& b = pair.second;
@@ -46,14 +48,13 @@ int main(int argc, char* argv[]) {
     output_file << fmt::format("Naive: {:%T}\n", end - start);
 
     // Benchmark Wavefront
-    auto start = std::chrono::system_clock::now();
-    wfa::wavefront_arena_t arena1;
+    start = std::chrono::system_clock::now();
     for (const auto& pair : sequences) {
         const std::string& a = pair.first;
         const std::string& b = pair.second;
         wfa::wavefront(a, b, x, o, e, arena1);
     }
-    auto end = std::chrono::system_clock::now();
+    end = std::chrono::system_clock::now();
     fmt::println("Wavefront: {:%T}", end - start);
     output_file << fmt::format("Wavefront: {:%T}\n", end - start);
 
