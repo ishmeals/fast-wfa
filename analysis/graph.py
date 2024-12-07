@@ -37,6 +37,7 @@ def plot_line(data, x, y, hue, title, x_label, y_label, output_file, sample_coun
     plt.title(f"{title}\n(Sample Count: {sample_count}, Sequence Length: {seq_length})")
     plt.xlabel(x_label)
     plt.ylabel(y_label)
+    plt.yscale("log")
     plt.legend(title=hue)
     plt.tight_layout()
     plt.savefig(output_file)
@@ -80,6 +81,25 @@ def plot_heatmap_grid(data, x, y, z, title, x_label, y_label, output_file, sampl
     plt.close()
 
 
+def plot_heatmap_single(data, x, y, z, title, x_label, y_label, output_file):
+    """Generate a single heatmap with a gradient description."""
+    plt.figure(figsize=(10, 6))
+    pivot_table = data.pivot_table(index=y, columns=x, values=z)
+    sns.heatmap(
+        pivot_table,
+        annot=True,
+        fmt=".2f",  # Regular numeric format
+        cmap="viridis",
+        cbar_kws={"label": "Time (s)"},  # Add label to color bar
+    )
+    plt.title(title)
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
+    plt.tight_layout()
+    plt.savefig(output_file)
+    plt.close()
+
+
 # Define experiments with parameters
 experiments = {
     "Error v Time": {
@@ -100,7 +120,78 @@ experiments = {
         "x_label": "Sequence Length",
         "y_label": "Average Time (s)",
     },
-    # Add other experiments as needed...
+    "Gap Opening v Time": {
+        "type": "line",
+        "x": "Gap Opening Cost",
+        "y": "Avg Time",
+        "hue": "Algorithm",
+        "title": "Gap Opening Cost vs Average Time",
+        "x_label": "Gap Opening Cost",
+        "y_label": "Average Time (s)",
+    },
+    "Gap Extension v Time": {
+        "type": "line",
+        "x": "Gap Extension Cost",
+        "y": "Avg Time",
+        "hue": "Algorithm",
+        "title": "Gap Extension Cost vs Average Time",
+        "x_label": "Gap Extension Cost",
+        "y_label": "Average Time (s)",
+    },
+    "Mismatch Penalty v Time": {
+        "type": "line",
+        "x": "Mismatch Penalty",
+        "y": "Avg Time",
+        "hue": "Algorithm",
+        "title": "Mismatch Penalty vs Average Time",
+        "x_label": "Mismatch Penalty",
+        "y_label": "Average Time (s)",
+    },
+    "Joint Error & Length": {
+        "type": "heatmap_grid",
+        "x": "Error Rate",
+        "y": "Sequence Length",
+        "z": "Avg Time",
+        "title": "Joint Impact of Error Rate and Sequence Length on Time",
+        "x_label": "Error Rate",
+        "y_label": "Sequence Length",
+    },
+    "Gap Costs Interaction": {
+        "type": "heatmap_grid",
+        "x": "Gap Opening Cost",
+        "y": "Gap Extension Cost",
+        "z": "Avg Time",
+        "title": "Interaction of Gap Costs",
+        "x_label": "Gap Opening Cost",
+        "y_label": "Gap Extension Cost",
+    },
+    "Sensitivity Analysis": {
+        "type": "heatmap_grid",
+        "x": "Gap Opening Cost",
+        "y": "Gap Extension Cost",
+        "z": "Avg Time",
+        "title": "Sensitivity Analysis",
+        "x_label": "Gap Opening Cost",
+        "y_label": "Gap Extension Cost",
+    },
+    "Error Rate & Complexity": {
+        "type": "line",
+        "x": "Error Rate",
+        "y": "Avg Time",
+        "hue": "Algorithm",
+        "title": "Error Rate vs Time with Complexity",
+        "x_label": "Error Rate",
+        "y_label": "Average Time (s)",
+    },
+    "Length & Gap Penalties": {
+        "type": "heatmap_grid",
+        "x": "Sequence Length",
+        "y": "Gap Opening Cost",
+        "z": "Avg Time",
+        "title": "Combination of Sequence Length and Gap Penalties",
+        "x_label": "Sequence Length",
+        "y_label": "Gap Opening Cost",
+    },
 }
 
 # Generate plots for each experiment
@@ -118,6 +209,19 @@ for experiment, params in experiments.items():
             x=params["x"],
             y=params["y"],
             hue=params["hue"],
+            title=params["title"],
+            x_label=params["x_label"],
+            y_label=params["y_label"],
+            output_file=output_file,
+            sample_count=sample_count,
+            seq_length=seq_length,
+        )
+    elif params["type"] == "heatmap_grid":
+        plot_heatmap_grid(
+            filtered_data,
+            x=params["x"],
+            y=params["y"],
+            z=params["z"],
             title=params["title"],
             x_label=params["x_label"],
             y_label=params["y_label"],
