@@ -31,11 +31,15 @@ double parse_time(const std::string& line) {
 // Function to execute the alignment executable and capture the output
 double run_alignment(const std::string& executable, double error_rate, int sequence_length,
     int num_sequences, int x, int o, int e, const std::string& algorithm) {
+    // Determine temp output path
+    std::filesystem::path repo_base = get_repository_base();
+    std::filesystem::path temp_output_path = repo_base / "results" / "temp_output.txt";
+
     std::ostringstream command;
     command << executable << " " << error_rate << " " << sequence_length << " " << num_sequences
         << " " << x << " " << o << " " << e;
 
-    std::string cmd = command.str() + " > temp_output.txt";
+    std::string cmd = command.str() + " > " + temp_output_path.string();
     int exit_code = std::system(cmd.c_str());
 
     if (exit_code != 0) {
@@ -43,9 +47,9 @@ double run_alignment(const std::string& executable, double error_rate, int seque
         return 0.0;
     }
 
-    std::ifstream temp_output("temp_output.txt");
+    std::ifstream temp_output(temp_output_path);
     if (!temp_output) {
-        std::cerr << "Failed to open temp_output.txt\n";
+        std::cerr << "Failed to open " << temp_output_path << "\n";
         return 0.0;
     }
 
