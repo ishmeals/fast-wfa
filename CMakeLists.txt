@@ -146,6 +146,6 @@ if (LINUX)
 	#
 
 	add_executable(experiment analysis/experiment.cpp)
-	target_link_libraries(experiment PRIVATE ${LIB_WFA} fmt::fmt)
+	target_link_libraries(experiment PRIVATE ${LIB_WFA} fmt::fmt wfa2::wfa2cpp)
 
 endif()

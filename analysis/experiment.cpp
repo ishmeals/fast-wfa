@@ -6,8 +6,15 @@
 #include <sstream>
 #include <chrono>
 #include <iomanip>
+
+#include "include/wfa.hpp"
+#include "include/wfa_simd.hpp"
+#include "include/naive.hpp"
+#include "bindings/cpp/WFAligner.hpp"
 #include <filesystem>
 #include "include/data_gen.hpp"
+#include "fmt/format.h"
+#include "fmt/chrono.h"
 
 
 // Helper function to find the repository base
@@ -45,7 +52,7 @@ double parse_time(const std::string& line) {
 double run_alignment(const std::string& executable, double error_rate, int sequence_length,
     int num_sequences, int x, int o, int e, const std::string& algorithm) {
     // Determine temp output path
-    std::filesystem::path repo_base = get_repository_base();
+    /*std::filesystem::path repo_base = get_repository_base();
     std::filesystem::path temp_output_path = repo_base / "results" / "temp_output.txt";
 
     std::ostringstream command;
@@ -65,9 +72,61 @@ double run_alignment(const std::string& executable, double error_rate, int seque
         std::cerr << "Failed to open " << temp_output_path << "\n";
         return 0.0;
     }
+    std::cout << "line" << std::endl;
+    std::string line;*/
 
-    std::string line;
+    // Generate sequences
+    auto sequences = wfa::modify_sequences(sequence_length, num_sequences, error_rate);
+
+    // Benchmark Naive
+    auto start = std::chrono::system_clock::now();
+    wfa::wavefront_arena_t arena1;
+    for (const auto& pair : sequences) {
+        const std::string& a = pair.first;
+        const std::string& b = pair.second;
+        wfa::naive(a, b, x, o, e);
+    }
+    auto end = std::chrono::system_clock::now();
+    //fmt::println("Naive: {:%T}", end - start);
+
+
+    // Benchmark Wavefront
+    start = std::chrono::system_clock::now();
+    for (const auto& pair : sequences) {
+        const std::string& a = pair.first;
+        const std::string& b = pair.second;
+        wfa::wavefront(a, b, x, o, e, arena1);
+    }
+    end = std::chrono::system_clock::now();
+    //fmt::println("Wavefront: {:%T}", end - start);
+
+    // Benchmark Wavefront SIMD
+    start = std::chrono::system_clock::now();
+    wfa::wavefront_arena_t arena2;
+    for (const auto& pair : sequences) {
+        const std::string& a = pair.first;
+        const std::string& b = pair.second;
+        wfa::wavefront_simd(a, b, x, o, e, arena2);
+    }
+    end = std::chrono::system_clock::now();
+    //fmt::println("Wavefront SIMD: {:%T}", end - start);
+
+    // Benchmark WFA2-lib
+    wfa::WFAlignerGapAffine aligner(x, o, e, wfa::WFAligner::Alignment, wfa::WFAligner::MemoryHigh);
+    start = std::chrono::system_clock::now();
+    for (const auto& pair : sequences) {
+        const std::string& a = pair.first;
+        const std::string& b = pair.second;
+
+        aligner.alignEnd2End(a, b);
+    }
+    end = std::chrono::system_clock::now();
+    //fmt::println("WFA2-lib: {:%T}", end - start);
+    auto dur = end - start;
+    auto ms = std::chrono::round<std::chrono::milliseconds>(dur);
+
     while (std::getline(temp_output, line)) {
+        std::cout << line << std::endl;
         if (line.find(algorithm + ":") != std::string::npos) {
             return parse_time(line.substr(line.find(':') + 1));
         }
