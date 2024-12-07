@@ -76,7 +76,7 @@ void write_to_csv(const std::string& filename, const std::vector<std::vector<std
 }
 
 
-void experiment_vary_error_rate(const std::string& executable, const std::string& output_csv) {
+void experiment_vary_error_rate(const std::string& output_csv) {
     int mismatch_penalty = 4;
     int gap_opening_cost = 6;
     int gap_extension_cost = 2;
@@ -93,7 +93,7 @@ void experiment_vary_error_rate(const std::string& executable, const std::string
     }
 }
 
-void experiment_vary_sequence_length(const std::string& executable, const std::string& output_csv) {
+void experiment_vary_sequence_length(const std::string& output_csv) {
     double error_rate = 0.1;
     int mismatch_penalty = 4;
     int gap_opening_cost = 6;
@@ -110,7 +110,7 @@ void experiment_vary_sequence_length(const std::string& executable, const std::s
     }
 }
 
-void experiment_vary_gap_opening(const std::string& executable, const std::string& output_csv) {
+void experiment_vary_gap_opening(const std::string& output_csv) {
     double error_rate = 0.1;
     int sequence_length = 100;
     int mismatch_penalty = 4;
@@ -127,7 +127,7 @@ void experiment_vary_gap_opening(const std::string& executable, const std::strin
     }
 }
 
-void experiment_vary_gap_extension(const std::string& executable, const std::string& output_csv) {
+void experiment_vary_gap_extension(const std::string& output_csv) {
     double error_rate = 0.1;
     int sequence_length = 100;
     int mismatch_penalty = 4;
@@ -144,7 +144,7 @@ void experiment_vary_gap_extension(const std::string& executable, const std::str
     }
 }
 
-void experiment_vary_mismatch_penalty(const std::string& executable, const std::string& output_csv) {
+void experiment_vary_mismatch_penalty(const std::string& output_csv) {
     double error_rate = 0.1;
     int sequence_length = 100;
     int gap_opening_cost = 6;
@@ -162,7 +162,7 @@ void experiment_vary_mismatch_penalty(const std::string& executable, const std::
 }
 
 // Experiment: Joint Impact of Error Rate and Sequence Length
-void experiment_joint_error_length(const std::string& executable, const std::string& output_csv) {
+void experiment_joint_error_length(const std::string& output_csv) {
     int mismatch_penalty = 4;
     int gap_opening_cost = 6;
     int gap_extension_cost = 2;
@@ -182,7 +182,7 @@ void experiment_joint_error_length(const std::string& executable, const std::str
 }
 
 // Experiment: Interaction of Gap Costs
-void experiment_interaction_gap_costs(const std::string& executable, const std::string& output_csv) {
+void experiment_interaction_gap_costs(const std::string& output_csv) {
     double error_rate = 0.1;
     int sequence_length = 100;
     int mismatch_penalty = 4;
@@ -202,7 +202,7 @@ void experiment_interaction_gap_costs(const std::string& executable, const std::
 }
 
 // Experiment: Algorithm Sensitivity Analysis
-void experiment_sensitivity_analysis(const std::string& executable, const std::string& output_csv) {
+void experiment_sensitivity_analysis(const std::string& output_csv) {
     double error_rate = 0.1;
     int sequence_length = 100;
     int num_samples = 1000000;
@@ -224,7 +224,7 @@ void experiment_sensitivity_analysis(const std::string& executable, const std::s
 }
 
 // Experiment: Varying Error Rate with Increased Complexity
-void experiment_error_rate_complexity(const std::string& executable, const std::string& output_csv) {
+void experiment_error_rate_complexity(const std::string& output_csv) {
     int sequence_length = 100;
     int mismatch_penalty = 4;
     int gap_extension_cost = 2;
@@ -244,7 +244,7 @@ void experiment_error_rate_complexity(const std::string& executable, const std::
 }
 
 // Experiment: Combination of Sequence Length and Gap Penalties
-void experiment_length_gap_penalties(const std::string& executable, const std::string& output_csv) {
+void experiment_length_gap_penalties(const std::string& output_csv) {
     double error_rate = 0.05;
     int mismatch_penalty = 4;
     int gap_extension_cost = 2;
