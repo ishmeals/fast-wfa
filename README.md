@@ -47,7 +47,7 @@ This project requires the following dependencies:
 - CMake 3.28 or higher
 - Ninja build system
 - Python 3.8+ with pandas, seaborn, matplotlib
-- Libraries:
+- Libraries (automatically pulled through FetchContent):
   - [Kokkos](https://github.com/kokkos/kokkos)
   - [fmt](https://github.com/fmtlib/fmt)
   - [WFA2-lib](https://github.com/QuantumFelidae/WFA2-lib)
